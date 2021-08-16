@@ -5,8 +5,6 @@ A REST API web service for registering smart devices written in Python using Fla
 
 ## TODO
 
-1. SQLite database with SQLAlchemy
-2. User authentication with tokens
-3. Initial data for database
-4. Restructure project
-5. Docs
+1. Restructure project
+2. File upload/download?
+3. Docs

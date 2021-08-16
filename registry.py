@@ -4,11 +4,14 @@ import time
 
 from flask import Flask, request, jsonify
 from flask.cli import with_appcontext
-from flask_httpauth import HTTPBasicAuth
+from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth, MultiAuth
 from flask_sqlalchemy import SQLAlchemy
+from itsdangerous import TimedJSONWebSignatureSerializer as JWS
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'Pandas are awesome!'
 start_time = time.time()
 
 db_path = os.path.join(app.root_path, 'registry_data.sqlite')
@@ -93,19 +96,48 @@ def init_db_command():
 app.cli.add_command(init_db_command)
 
 
+# https://github.com/miguelgrinberg/Flask-HTTPAuth/blob/main/examples/multi_auth.py
+
 basic_auth = HTTPBasicAuth()
+token_auth = HTTPTokenAuth()
+multi_auth = MultiAuth(basic_auth, token_auth)
+
+jws = JWS(app.config['SECRET_KEY'], expires_in=3600)
 
 users = {
-  'pythonista': 'I<3testing'
+  'pythonista': generate_password_hash('I<3testing')
 }
+
+
+def serialize_token(username):
+  token = jws.dumps({'username': username})
+  return token
+
+
+def deserialize_token(token):
+  try:
+    data = jws.loads(token)
+  except:
+    return None
+  if 'username' in data:
+    return data['username']
 
 
 @basic_auth.verify_password
 def verify_password(username, password):
-  return username in users and users[username] == password
+  if username in users:
+      if check_password_hash(users.get(username), password):
+          return username
+
+
+@token_auth.verify_token
+def verify_token(token):
+  if username := deserialize_token(token):
+    return username
 
 
 @basic_auth.error_handler
+@token_auth.error_handler
 def auth_error():
   return unauthorized('Invalid credentials')
 
@@ -171,8 +203,16 @@ def status():
   return jsonify(response)
 
 
-@app.route('/devices/', methods=['GET'])
+@app.route('/authenticate/')
 @basic_auth.login_required
+def authenticate():
+  token = serialize_token(basic_auth.current_user())
+  response = {'token': token.decode('ascii')}
+  return jsonify(response)
+
+
+@app.route('/devices/', methods=['GET'])
+@multi_auth.login_required
 def get_devices():
   devices = Device.query.all()
   device_dict = {'devices': [device.to_json() for device in devices]}
@@ -180,7 +220,7 @@ def get_devices():
 
 
 @app.route('/devices/', methods=['POST'])
-@basic_auth.login_required
+@multi_auth.login_required
 def post_devices():
   device = Device.from_json(request.json)
   db.session.add(device)
@@ -189,7 +229,7 @@ def post_devices():
 
 
 @app.route('/devices/<int:id>', methods=['GET'])
-@basic_auth.login_required
+@multi_auth.login_required
 def get_device_id(id):
   device = Device.query.filter_by(id=id).first()
   if not device:
@@ -199,7 +239,7 @@ def get_device_id(id):
 
 
 @app.route('/devices/<int:id>', methods=['PATCH', 'PUT'])
-@basic_auth.login_required
+@multi_auth.login_required
 def patch_put_device_id(id):
   device = Device.query.filter_by(id=id).first()
   if not device:
