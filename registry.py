@@ -4,6 +4,7 @@ import time
 
 from flask import Flask, request, jsonify
 from flask.cli import with_appcontext
+from flask_httpauth import HTTPBasicAuth
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -92,6 +93,23 @@ def init_db_command():
 app.cli.add_command(init_db_command)
 
 
+basic_auth = HTTPBasicAuth()
+
+users = {
+  'pythonista': 'I<3testing'
+}
+
+
+@basic_auth.verify_password
+def verify_password(username, password):
+  return username in users and users[username] == password
+
+
+@basic_auth.error_handler
+def auth_error():
+  return unauthorized('Invalid credentials')
+
+
 class ValidationError(ValueError):
   pass
 
@@ -101,6 +119,13 @@ class ValidationError(ValueError):
 def bad_request(e):
   response = jsonify({'error': 'bad request', 'message': str(e)})
   response.status_code = 400
+  return response
+
+
+@app.errorhandler(401)
+def unauthorized(e):
+  response = jsonify({'error': 'unauthorized', 'message': str(e)})
+  response.status_code = 401
   return response
 
 
@@ -147,6 +172,7 @@ def status():
 
 
 @app.route('/devices/', methods=['GET'])
+@basic_auth.login_required
 def get_devices():
   devices = Device.query.all()
   device_dict = {'devices': [device.to_json() for device in devices]}
@@ -154,6 +180,7 @@ def get_devices():
 
 
 @app.route('/devices/', methods=['POST'])
+@basic_auth.login_required
 def post_devices():
   device = Device.from_json(request.json)
   db.session.add(device)
@@ -162,6 +189,7 @@ def post_devices():
 
 
 @app.route('/devices/<int:id>', methods=['GET'])
+@basic_auth.login_required
 def get_device_id(id):
   device = Device.query.filter_by(id=id).first()
   if not device:
@@ -171,6 +199,7 @@ def get_device_id(id):
 
 
 @app.route('/devices/<int:id>', methods=['PATCH', 'PUT'])
+@basic_auth.login_required
 def patch_put_device_id(id):
   device = Device.query.filter_by(id=id).first()
   if not device:
