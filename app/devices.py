@@ -7,12 +7,15 @@ The resources cover basic CRUD operations.
 # Imports
 # --------------------------------------------------------------------------------
 
+import io
+
 from . import db
 from .auth import multi_auth
 from .errors import not_found
 from .models import Device
 
 from flask import Blueprint, request, jsonify
+from werkzeug.utils import send_file
 
 
 # --------------------------------------------------------------------------------
@@ -70,11 +73,25 @@ def patch_put_device_id(id):
   return jsonify(device.to_json())
 
 
-# @devices.route('/devices/<int:id>/report')
-# def devices_id_report(id):
-#   return str(id)
+@devices.route('/devices/<int:id>/report', methods=['GET'])
+@multi_auth.login_required
+def devices_id_report(id):
+  device = Device.query.filter_by(id=id).first()
+  if not device:
+    return not_found()
 
+  report = io.BytesIO()
+  report.write(bytes(f'ID: {device.id}\n', 'ascii'))
+  report.write(bytes(f'Name: {device.name}\n', 'ascii'))
+  report.write(bytes(f'Location: {device.location}\n', 'ascii'))
+  report.write(bytes(f'Type: {device.type}\n', 'ascii'))
+  report.write(bytes(f'Model: {device.model}\n', 'ascii'))
+  report.write(bytes(f'Serial Number: {device.serial_number}\n', 'ascii'))
+  report.seek(0)
 
-# @devices.route('/devices/<int:id>/image')
-# def devices_id_image(id):
-#   return str(id)
+  return send_file(
+    report,
+    request.environ,
+    mimetype='text/plain',
+    download_name=f'{device.name}.txt',
+    as_attachment=True)
