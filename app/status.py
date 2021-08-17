@@ -25,7 +25,8 @@ status = Blueprint('status', __name__)
 
 @status.route('/')
 def index():
-  return 'This is a device registry REST API.'
+  return 'This is a device registry web service. ' + \
+    'It provides a REST API for managing smart devices.'
 
 
 @status.route('/status/', methods=['GET'])

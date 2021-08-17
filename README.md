@@ -5,6 +5,5 @@ A REST API web service for registering smart devices written in Python using Fla
 
 ## TODO
 
-1. Customizable username/password? Token expiration?
-2. File upload/download?
-3. Docs
+1. File upload/download?
+2. Docs
