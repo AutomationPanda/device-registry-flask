@@ -1,12 +1,35 @@
+"""
+This module provides error handlers for this Flask app.
+Error handlers must be overridden to provide JSON responses.
+This module also provides a ValidationError exception class.
+Any ValidationError exceptions yield a "400 Bad Request" response.
+"""
+
+# --------------------------------------------------------------------------------
+# Imports
+# --------------------------------------------------------------------------------
+
 from flask import Blueprint, jsonify
 
+
+# --------------------------------------------------------------------------------
+# Blueprint
+# --------------------------------------------------------------------------------
 
 errors = Blueprint('errors', __name__)
 
 
+# --------------------------------------------------------------------------------
+# Exceptions
+# --------------------------------------------------------------------------------
+
 class ValidationError(ValueError):
   pass
 
+
+# --------------------------------------------------------------------------------
+# Resources
+# --------------------------------------------------------------------------------
 
 @errors.errorhandler(400)
 @errors.errorhandler(ValidationError)

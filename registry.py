@@ -1,3 +1,20 @@
+"""
+This module is the "entry point" for running this Flask app.
+It creates the app using the "create_app" factory function.
+It also creates a CLI command "init-db" for creating the app's SQLite database.
+
+To run this app:
+1. Set the "FLASK_APP" environment variable to "registry".
+2. Run "flask run".
+
+By default, this app uses the "development" config.
+Change the target config by setting the "FLASK_CONFIG" environment variable.
+"""
+
+# --------------------------------------------------------------------------------
+# Imports
+# --------------------------------------------------------------------------------
+
 import click
 import flask
 import os
@@ -6,8 +23,16 @@ from app import create_app, db
 from app.models import Device
 
 
+# --------------------------------------------------------------------------------
+# App Creation
+# --------------------------------------------------------------------------------
+
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 
+
+# --------------------------------------------------------------------------------
+# CLI Commands
+# --------------------------------------------------------------------------------
 
 @app.cli.command('init-db')
 def init_db():

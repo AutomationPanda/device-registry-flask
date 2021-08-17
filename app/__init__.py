@@ -1,3 +1,13 @@
+"""
+This module provides the app factory method.
+It adds all the blueprints to the app.
+This module also provides a reference to the database object and the start time.
+"""
+
+# --------------------------------------------------------------------------------
+# Imports
+# --------------------------------------------------------------------------------
+
 import os
 import time
 
@@ -8,11 +18,18 @@ from flask_sqlalchemy import SQLAlchemy
 from itsdangerous import TimedJSONWebSignatureSerializer as JWS
 
 
-START_TIME = time.time()
+# --------------------------------------------------------------------------------
+# Variables
+# --------------------------------------------------------------------------------
 
+START_TIME = time.time()
 
 db = SQLAlchemy()
 
+
+# --------------------------------------------------------------------------------
+# App Factory
+# --------------------------------------------------------------------------------
 
 def create_app(config_name):
   app = Flask(__name__)

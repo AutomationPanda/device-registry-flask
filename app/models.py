@@ -1,6 +1,18 @@
+"""
+This module provides database models.
+"""
+
+# --------------------------------------------------------------------------------
+# Imports
+# --------------------------------------------------------------------------------
+
 from . import db
 from .errors import ValidationError
 
+
+# --------------------------------------------------------------------------------
+# Models
+# --------------------------------------------------------------------------------
 
 class Device(db.Model):
   __tablename__ = 'devices'
@@ -13,6 +25,8 @@ class Device(db.Model):
 
   @staticmethod
   def validate_full(json_data):
+    """Raises a ValidationError if 'json_data' cannot be converted into a Device object."""
+
     if not json_data:
       raise ValidationError(f'The device is missing all data')
 
@@ -27,10 +41,12 @@ class Device(db.Model):
 
   @staticmethod
   def from_json(json_data):
+    """Creates a Device object based on the 'json_data' dictionary."""
     Device.validate_full(json_data)
     return Device(**json_data)
 
   def to_json(self):
+    """Creates a JSON-compatible dictionary for this Device object's values."""
     return {
       'id': self.id,
       'name': self.name,
@@ -41,6 +57,7 @@ class Device(db.Model):
     }
 
   def update_from_json(self, json_data):
+    """Updates this Device object using values from the 'json_data' dictionary."""
     Device.validate_full(json_data)
     self.name = json_data['name']
     self.location = json_data['location']
@@ -49,6 +66,7 @@ class Device(db.Model):
     self.serial_number = json_data['serial_number']
 
   def patch_from_json(self, json_data):
+    """Patches this Device object's 'name' and 'location' fields from 'json_data'."""
     if not json_data:
         raise ValidationError(f'The request is missing all data')
 

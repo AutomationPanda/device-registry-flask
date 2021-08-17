@@ -1,3 +1,12 @@
+"""
+This module provides a blueprint for device resources.
+The resources cover basic CRUD operations.
+"""
+
+# --------------------------------------------------------------------------------
+# Imports
+# --------------------------------------------------------------------------------
+
 from . import db
 from .auth import multi_auth
 from .errors import not_found
@@ -6,8 +15,16 @@ from .models import Device
 from flask import Blueprint, request, jsonify
 
 
+# --------------------------------------------------------------------------------
+# Blueprint
+# --------------------------------------------------------------------------------
+
 devices = Blueprint('devices', __name__)
 
+
+# --------------------------------------------------------------------------------
+# Resources
+# --------------------------------------------------------------------------------
 
 @devices.route('/devices/', methods=['GET'])
 @multi_auth.login_required
