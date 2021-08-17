@@ -1,7 +1,7 @@
 """
 This module provides the app factory method.
 It adds all the blueprints to the app.
-This module also provides a reference to the database object and the start time.
+This module also provides a reference to the database object, users, and the start time.
 """
 
 # --------------------------------------------------------------------------------
@@ -16,6 +16,7 @@ from config import config
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from itsdangerous import TimedJSONWebSignatureSerializer as JWS
+from werkzeug.security import generate_password_hash
 
 
 # --------------------------------------------------------------------------------
@@ -25,6 +26,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer as JWS
 START_TIME = time.time()
 
 db = SQLAlchemy()
+users = dict()
 
 
 # --------------------------------------------------------------------------------
@@ -51,6 +53,12 @@ def create_app(config_name):
   from .devices import devices as devices_blueprint
   app.register_blueprint(devices_blueprint)
 
-  app.jws = JWS(app.config['SECRET_KEY'], expires_in=3600)
+  app.jws = JWS(
+    app.config['SECRET_KEY'],
+    expires_in=app.config['AUTH_TOKEN_EXPIRATION'])
+  
+  username = app.config['AUTH_USERNAME']
+  password = generate_password_hash(app.config['AUTH_PASSWORD'])
+  users[username] = password
 
   return app

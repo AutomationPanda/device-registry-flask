@@ -1,6 +1,7 @@
 """
 This module provides app configurations as classes.
 Each config sets Flask settings like SECRET_KEY.
+Many settings can be overridden using environment variables.
 """
 
 # --------------------------------------------------------------------------------
@@ -22,6 +23,9 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # --------------------------------------------------------------------------------
 
 class Config:
+  AUTH_PASSWORD = os.environ.get('AUTH_PASSWORD') or 'I<3testing'
+  AUTH_TOKEN_EXPIRATION = int(os.environ.get('AUTH_TOKEN_EXPIRATION') or 3600)
+  AUTH_USERNAME = os.environ.get('AUTH_USERNAME') or 'pythonista'
   SECRET_KEY = os.environ.get('SECRET_KEY') or 'Pandas are awesome!'
   SQLALCHEMY_TRACK_MODIFICATIONS = False
 

@@ -6,7 +6,7 @@ Authentication may be handled two ways:
 1. Basic HTTP authentication (username/password)
 2. Token authentication (Bearer)
 
-The username and password are hardcoded to "pythonista" and "I<3testing".
+The username and password come from 'users', which gets values from the config.
 In a *real* app, the database should store users and passwords.
 
 Call the "/authenticate/" resource to get an authentication token.
@@ -17,12 +17,13 @@ Tokens expire after 1 hour (unless otherwise configured).
 # Imports
 # --------------------------------------------------------------------------------
 
+from . import users
 from .errors import unauthorized
 
 from flask import Blueprint, current_app, jsonify
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth, MultiAuth
 from itsdangerous import TimedJSONWebSignatureSerializer as JWS
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash
 
 
 # --------------------------------------------------------------------------------
@@ -40,10 +41,6 @@ auth = Blueprint('auth', __name__)
 basic_auth = HTTPBasicAuth()
 token_auth = HTTPTokenAuth()
 multi_auth = MultiAuth(basic_auth, token_auth)
-
-users = {
-  'pythonista': generate_password_hash('I<3testing')
-}
 
 
 # --------------------------------------------------------------------------------
