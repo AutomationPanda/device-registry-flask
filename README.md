@@ -26,8 +26,11 @@ It is the web service used for Chapter 6 in *The Way To Test Software* by Andrew
    * Write positive test with auth
    * Write negative test without auth
    * Show auth with tokens
-3. CRUD tests (including negative cases)
-4. Additional REST API factors
+3. CRUD tests with '/devices/<id>'
+   * Include negative cases
+4. Security tests with '/devices/'
+   * Multiple users
+5. Additional REST API factors
    * Query parameters for large data
    * File downloads
    * HEAD and OPTIONS for GET
