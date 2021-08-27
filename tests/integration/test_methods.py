@@ -4,6 +4,10 @@ Flask automatically adds HEAD and OPTIONS responses for GET routes.
 Unsupported methods should return 405 status codes.
 These methods should be tested, but the tests are repetitive.
 Tests should be parametrized together to minimize code duplication.
+
+COMPLICATIONS!
+1. authentication
+2. database records
 """
 
 # --------------------------------------------------------------------------------
@@ -39,7 +43,7 @@ def test_head(base_url, resource):
   assert len(response.headers) == len(get_response.headers)
   for header in response.headers:
     assert header in get_response.headers
-    if header != 'Date':
+    if header != 'Date' and header != 'Content-Length':
       assert response.headers[header] == get_response.headers[header]
 
 
