@@ -12,4 +12,3 @@ It is the web service used for Chapter 6 in *The Way To Test Software* by Andrew
 
 * Docs
 * Tests
-* Devices grouped by user?
