@@ -30,7 +30,7 @@ def index():
 
 
 @status.route('/status/', methods=['GET'])
-def get_status():
+def status_get():
   response = {
     'online': True,
     'uptime': round(time.time() - START_TIME, 3)

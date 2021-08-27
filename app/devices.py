@@ -53,7 +53,7 @@ def query_device(id, username):
 
 @devices.route('/devices/', methods=['GET'])
 @multi_auth.login_required
-def get_devices():
+def devices_get():
   username = multi_auth.current_user()
   ds = Device.query.filter_by(owner=username)
   device_dict = {'devices': [device.to_json() for device in ds]}
@@ -62,7 +62,7 @@ def get_devices():
 
 @devices.route('/devices/', methods=['POST'])
 @multi_auth.login_required
-def post_devices():
+def devices_post():
   username = multi_auth.current_user()
   handle_json_owner(request.json, username)
   device = Device.from_json(request.json)
@@ -73,7 +73,7 @@ def post_devices():
 
 @devices.route('/devices/<int:id>', methods=['GET'])
 @multi_auth.login_required
-def get_device_id(id):
+def device_id_get(id):
   username = multi_auth.current_user()
   device = query_device(id, username)
   return jsonify(device.to_json())
@@ -81,7 +81,7 @@ def get_device_id(id):
 
 @devices.route('/devices/<int:id>', methods=['PATCH', 'PUT'])
 @multi_auth.login_required
-def patch_put_device_id(id):
+def device_id_patch_put(id):
   username = multi_auth.current_user()
   device = query_device(id, username)
   
@@ -98,7 +98,7 @@ def patch_put_device_id(id):
 
 @devices.route('/devices/<int:id>/report', methods=['GET'])
 @multi_auth.login_required
-def devices_id_report(id):
+def devices_id_report_get(id):
   username = multi_auth.current_user()
   device = query_device(id, username)
 
