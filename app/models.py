@@ -22,6 +22,7 @@ class Device(db.Model):
   type = db.Column(db.String(64))
   model = db.Column(db.String(64))
   serial_number = db.Column(db.String(16))
+  owner = db.Column(db.String(64))
 
   @staticmethod
   def validate_full(json_data):
@@ -30,7 +31,7 @@ class Device(db.Model):
     if not json_data:
       raise ValidationError(f'The device is missing all data')
 
-    valid_fields = ['name', 'location', 'type', 'model', 'serial_number']
+    valid_fields = ['name', 'location', 'type', 'model', 'serial_number', 'owner']
     missing_fields = [key for key in valid_fields if key not in json_data]
     if missing_fields:
       raise ValidationError(f'The device has missing fields: {", ".join(missing_fields)}')
@@ -53,7 +54,8 @@ class Device(db.Model):
       'location': self.location,
       'type': self.type,
       'model': self.model,
-      'serial_number': self.serial_number
+      'serial_number': self.serial_number,
+      'owner': self.owner
     }
 
   def update_from_json(self, json_data):
@@ -64,6 +66,7 @@ class Device(db.Model):
     self.type = json_data['type']
     self.model = json_data['model']
     self.serial_number = json_data['serial_number']
+    self.owner = json_data['owner']
 
   def patch_from_json(self, json_data):
     """Patches this Device object's 'name' and 'location' fields from 'json_data'."""

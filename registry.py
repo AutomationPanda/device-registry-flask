@@ -46,21 +46,24 @@ def init_db():
       location='Front Porch',
       type='Light Switch',
       model='GenLight 64B',
-      serial_number='GL64B-99987')
+      serial_number='GL64B-99987',
+      owner='pythonista')
 
     thermostat = Device(
       name='Main Thermostat',
       location='Living Room',
       type='Thermostat',
       model='ThermoBest 3G',
-      serial_number='TB3G-12345')
+      serial_number='TB3G-12345',
+      owner='pythonista')
     
     fridge = Device(
       name='Family Fridge',
       location='Kitchen',
       type='Refrigerator',
       model='El Gee Mondo21',
-      serial_number='LGM-20201')
+      serial_number='LGM-20201',
+      owner='engineer')
 
     db.session.add(light)
     db.session.add(thermostat)

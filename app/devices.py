@@ -11,10 +11,10 @@ import io
 
 from . import db
 from .auth import multi_auth
-from .errors import not_found
+from .errors import NotFoundError, UserUnauthorizedError
 from .models import Device
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, jsonify, request
 from werkzeug.utils import send_file
 
 
@@ -26,13 +26,36 @@ devices = Blueprint('devices', __name__)
 
 
 # --------------------------------------------------------------------------------
+# Functions
+# --------------------------------------------------------------------------------
+
+def handle_json_owner(json, username):
+  if 'owner' not in json:
+    json['owner'] = username
+  elif json['owner'] != username:
+    raise UserUnauthorizedError()
+
+
+def query_device(id, username):
+  device = Device.query.filter_by(id=id).first()
+  
+  if not device:
+    raise NotFoundError()
+  elif device.owner != username:
+    raise UserUnauthorizedError()
+  
+  return device
+
+
+# --------------------------------------------------------------------------------
 # Resources
 # --------------------------------------------------------------------------------
 
 @devices.route('/devices/', methods=['GET'])
 @multi_auth.login_required
 def get_devices():
-  ds = Device.query.all()
+  username = multi_auth.current_user()
+  ds = Device.query.filter_by(owner=username)
   device_dict = {'devices': [device.to_json() for device in ds]}
   return jsonify(device_dict)
 
@@ -40,6 +63,8 @@ def get_devices():
 @devices.route('/devices/', methods=['POST'])
 @multi_auth.login_required
 def post_devices():
+  username = multi_auth.current_user()
+  handle_json_owner(request.json, username)
   device = Device.from_json(request.json)
   db.session.add(device)
   db.session.commit()
@@ -49,23 +74,21 @@ def post_devices():
 @devices.route('/devices/<int:id>', methods=['GET'])
 @multi_auth.login_required
 def get_device_id(id):
-  device = Device.query.filter_by(id=id).first()
-  if not device:
-    return not_found()
-  else:
-    return jsonify(device.to_json())
+  username = multi_auth.current_user()
+  device = query_device(id, username)
+  return jsonify(device.to_json())
 
 
 @devices.route('/devices/<int:id>', methods=['PATCH', 'PUT'])
 @multi_auth.login_required
 def patch_put_device_id(id):
-  device = Device.query.filter_by(id=id).first()
-  if not device:
-    return not_found()
+  username = multi_auth.current_user()
+  device = query_device(id, username)
   
   if request.method == 'PATCH':
     device.patch_from_json(request.json)
   else:
+    handle_json_owner(request.json, username)
     device.update_from_json(request.json)
   
   db.session.add(device)
@@ -76,9 +99,8 @@ def patch_put_device_id(id):
 @devices.route('/devices/<int:id>/report', methods=['GET'])
 @multi_auth.login_required
 def devices_id_report(id):
-  device = Device.query.filter_by(id=id).first()
-  if not device:
-    return not_found()
+  username = multi_auth.current_user()
+  device = query_device(id, username)
 
   report = io.BytesIO()
   report.write(bytes(f'ID: {device.id}\n', 'ascii'))
@@ -87,6 +109,7 @@ def devices_id_report(id):
   report.write(bytes(f'Type: {device.type}\n', 'ascii'))
   report.write(bytes(f'Model: {device.model}\n', 'ascii'))
   report.write(bytes(f'Serial Number: {device.serial_number}\n', 'ascii'))
+  report.write(bytes(f'Owner: {device.owner}\n', 'ascii'))
   report.seek(0)
 
   return send_file(

@@ -23,9 +23,11 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # --------------------------------------------------------------------------------
 
 class Config:
-  AUTH_PASSWORD = os.environ.get('AUTH_PASSWORD') or 'I<3testing'
+  AUTH_PASSWORD1 = os.environ.get('AUTH_PASSWORD1') or 'I<3testing'
+  AUTH_PASSWORD2 = os.environ.get('AUTH_PASSWORD2') or 'Muh5devices'
   AUTH_TOKEN_EXPIRATION = int(os.environ.get('AUTH_TOKEN_EXPIRATION') or 3600)
-  AUTH_USERNAME = os.environ.get('AUTH_USERNAME') or 'pythonista'
+  AUTH_USERNAME1 = os.environ.get('AUTH_USERNAME1') or 'pythonista'
+  AUTH_USERNAME2 = os.environ.get('AUTH_USERNAME2') or 'engineer'
   SECRET_KEY = os.environ.get('SECRET_KEY') or 'Pandas are awesome!'
   SQLALCHEMY_TRACK_MODIFICATIONS = False
 

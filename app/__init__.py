@@ -57,8 +57,12 @@ def create_app(config_name):
     app.config['SECRET_KEY'],
     expires_in=app.config['AUTH_TOKEN_EXPIRATION'])
   
-  username = app.config['AUTH_USERNAME']
-  password = generate_password_hash(app.config['AUTH_PASSWORD'])
-  users[username] = password
+  username1 = app.config['AUTH_USERNAME1']
+  password1 = generate_password_hash(app.config['AUTH_PASSWORD1'])
+  users[username1] = password1
+
+  username2 = app.config['AUTH_USERNAME2']
+  password2 = generate_password_hash(app.config['AUTH_PASSWORD2'])
+  users[username2] = password2
 
   return app
