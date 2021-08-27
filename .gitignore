@@ -130,3 +130,6 @@ dmypy.json
 
 # SQLite databases
 *.sqlite
+
+# Integration test config file
+tests/integration/config.json

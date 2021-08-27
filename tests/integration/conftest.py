@@ -6,6 +6,7 @@ This module provides fixtures for integration tests.
 # Imports
 # --------------------------------------------------------------------------------
 
+import json
 import pytest
 
 
@@ -28,9 +29,9 @@ class BaseUrl:
 
 @pytest.fixture(scope='session')
 def test_config():
-  return {
-    'base_url': 'http://127.0.0.1:5000'
-  }
+  with open('tests/integration/config.json') as config_json:
+    data = json.load(config_json)
+  return data
 
 
 @pytest.fixture
