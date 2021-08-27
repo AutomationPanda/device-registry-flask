@@ -1,27 +1,18 @@
+"""
+This module contains integration tests for the '/status/' resource.
+"""
+
+# --------------------------------------------------------------------------------
+# Imports
+# --------------------------------------------------------------------------------
+
 import pytest
 import requests
 
 
-class BaseUrl:
-  
-  def __init__(self, base_url):
-    self.base_url = base_url
-  
-  def concat(self, resource):
-    return self.base_url + resource
-
-
-@pytest.fixture(scope='session')
-def test_config():
-  return {
-    'base_url': 'http://127.0.0.1:5000'
-  }
-
-
-@pytest.fixture
-def base_url(test_config):
-  return BaseUrl(test_config['base_url'])
-
+# --------------------------------------------------------------------------------
+# Tests
+# --------------------------------------------------------------------------------
 
 def test_status_get(base_url):
   url = base_url.concat('/status/')
