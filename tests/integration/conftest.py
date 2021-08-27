@@ -24,6 +24,27 @@ class BaseUrl:
 
 
 # --------------------------------------------------------------------------------
+# Class: User
+# --------------------------------------------------------------------------------
+
+class User:
+
+  def __init__(self, username, password):
+    self.username = username
+    self.password = password
+
+
+# --------------------------------------------------------------------------------
+# Private Functions
+# --------------------------------------------------------------------------------
+
+def _build_user(test_config, index):
+  users = test_config['users']
+  user = User(users[index]['username'], users[index]['password'])
+  return user
+
+
+# --------------------------------------------------------------------------------
 # Fixtures
 # --------------------------------------------------------------------------------
 
@@ -37,3 +58,13 @@ def test_config():
 @pytest.fixture
 def base_url(test_config):
   return BaseUrl(test_config['base_url'])
+
+
+@pytest.fixture
+def user1(test_config):
+  return _build_user(test_config, 0)
+
+
+@pytest.fixture
+def user2(test_config):
+  return _build_user(test_config, 1)
