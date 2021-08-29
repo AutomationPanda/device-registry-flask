@@ -26,6 +26,8 @@ It is the web service used for Chapter 6 in *The Way To Test Software* by Andrew
    * Write positive test with auth
    * Write negative test without auth
    * Show auth with tokens
+   * Show how to reuse token
+   * Discuss if every endpoint should test every type of auth or no-auth
 3. CRUD tests with '/devices/<id>'
    * Include negative cases
 4. Testing multiple objects with '/devices/'
