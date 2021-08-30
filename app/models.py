@@ -31,7 +31,7 @@ class Device(db.Model):
     if not json_data:
       raise ValidationError(f'The device is missing all data')
 
-    valid_fields = ['name', 'location', 'type', 'model', 'serial_number', 'owner']
+    valid_fields = ['name', 'location', 'type', 'model', 'serial_number']
     missing_fields = [key for key in valid_fields if key not in json_data]
     if missing_fields:
       raise ValidationError(f'The device has missing fields: {", ".join(missing_fields)}')
@@ -41,10 +41,10 @@ class Device(db.Model):
       raise ValidationError(f'The device has invalid fields: {", ".join(invalid_fields)}')
 
   @staticmethod
-  def from_json(json_data):
+  def from_json(json_data, owner):
     """Creates a Device object based on the 'json_data' dictionary."""
     Device.validate_full(json_data)
-    return Device(**json_data)
+    return Device(owner=owner, **json_data)
 
   def to_json(self):
     """Creates a JSON-compatible dictionary for this Device object's values."""
@@ -66,7 +66,6 @@ class Device(db.Model):
     self.type = json_data['type']
     self.model = json_data['model']
     self.serial_number = json_data['serial_number']
-    self.owner = json_data['owner']
 
   def patch_from_json(self, json_data):
     """Patches this Device object's 'name' and 'location' fields from 'json_data'."""

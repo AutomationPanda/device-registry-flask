@@ -29,13 +29,6 @@ devices = Blueprint('devices', __name__)
 # Functions
 # --------------------------------------------------------------------------------
 
-def handle_json_owner(json, username):
-  if 'owner' not in json:
-    json['owner'] = username
-  elif json['owner'] != username:
-    raise ValidationError(f'The device owner must be "{username}"')
-
-
 def query_device(id, username):
   device = Device.query.filter_by(id=id).first()
   
@@ -64,8 +57,7 @@ def devices_get():
 @multi_auth.login_required
 def devices_post():
   username = multi_auth.current_user()
-  handle_json_owner(request.json, username)
-  device = Device.from_json(request.json)
+  device = Device.from_json(request.json, username)
   db.session.add(device)
   db.session.commit()
   return jsonify(device.to_json())
@@ -88,7 +80,6 @@ def device_id_patch_put(id):
   if request.method == 'PATCH':
     device.patch_from_json(request.json)
   else:
-    handle_json_owner(request.json, username)
     device.update_from_json(request.json)
   
   db.session.add(device)

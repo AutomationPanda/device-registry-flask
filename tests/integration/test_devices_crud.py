@@ -132,15 +132,15 @@ def test_create_and_retrieve_device(base_url, user1_session, thermostat):
 
 
 @pytest.mark.parametrize(
-  'field, value, message',
+  'field, value',
   [
-    ('owner', 'nobody', 'The device owner must be "pythonista"'),
-    ('id', EXPLICIT_ID, 'The device has invalid fields: id'),
-    ('garbage', 'nonsense', 'The device has invalid fields: garbage')
+    ('id', EXPLICIT_ID),
+    ('owner', 'nobody'),
+    ('garbage', 'nonsense')
   ]
 )
 def test_create_with_invalid_field_yields_error(
-  field, value, message, base_url, user1_session, thermostat_data):
+  field, value, base_url, user1_session, thermostat_data):
   thermostat_data[field] = value
 
   # Attempt create
@@ -151,14 +151,14 @@ def test_create_with_invalid_field_yields_error(
   # Verify error
   assert post_response.status_code == 400
   post_data['error'] == 'bad request'
-  post_data['message'] == message
+  post_data['message'] == f'The device has invalid fields: {field}'
 
 
 @pytest.mark.parametrize(
   'field',
   ['name', 'location', 'type', 'model', 'serial_number']
 )
-def test_create_with_invalid_field_yields_error(field, base_url, user1_session, thermostat_data):
+def test_create_with_missing_field_yields_error(field, base_url, user1_session, thermostat_data):
   del thermostat_data[field]
 
   # Attempt create
@@ -227,14 +227,17 @@ def test_update_nonexistent_device_via_put_yields_error(base_url, user1_session,
   assert put_data['error'] == 'not found'
 
 
-# PUT with invalid fields
-# PUT with missing fields
-# TODO: Should JSON data permit 'id' and 'owner'?
-
-
-def test_update_device_via_put_with_explicit_id_yields_error(
-  base_url, user1_session, thermostat, light_data):
-  light_data['id'] = EXPLICIT_ID
+@pytest.mark.parametrize(
+  'field, value',
+  [
+    ('id', EXPLICIT_ID),
+    ('owner', 'nobody'),
+    ('garbage', 'nonsense')
+  ]
+)
+def test_update_device_via_put_with_invalid_field_yields_error(
+  field, value, base_url, user1_session, thermostat, light_data):
+  light_data[field] = value
 
   # Put
   device_url = base_url.concat(f'/devices/{thermostat["id"]}')
@@ -244,7 +247,26 @@ def test_update_device_via_put_with_explicit_id_yields_error(
   # Verify put
   assert put_response.status_code == 400
   put_data['error'] == 'bad request'
-  put_data['message'] == 'The device has invalid fields: id'
+  put_data['message'] == f'The device has invalid fields: {field}'
+
+
+@pytest.mark.parametrize(
+  'field',
+  ['name', 'location', 'type', 'model', 'serial_number']
+)
+def test_update_device_via_put_with_missing_field_yields_error(
+  field, base_url, user1_session, thermostat, light_data):
+  del light_data[field]
+
+  # Put
+  device_url = base_url.concat(f'/devices/{thermostat["id"]}')
+  put_response = user1_session.put(device_url, json=light_data)
+  put_data = put_response.json()
+
+  # Verify put
+  assert put_response.status_code == 400
+  put_data['error'] == 'bad request'
+  put_data['message'] == f'The device has missing fields: {field}'
 
 
 # --------------------------------------------------------------------------------
