@@ -11,7 +11,7 @@ import io
 
 from . import db
 from .auth import multi_auth
-from .errors import NotFoundError, UserUnauthorizedError
+from .errors import NotFoundError, UserUnauthorizedError, ValidationError
 from .models import Device
 
 from flask import Blueprint, jsonify, request
@@ -33,7 +33,7 @@ def handle_json_owner(json, username):
   if 'owner' not in json:
     json['owner'] = username
   elif json['owner'] != username:
-    raise UserUnauthorizedError()
+    raise ValidationError(f'The device owner must be "{username}"')
 
 
 def query_device(id, username):
@@ -94,6 +94,16 @@ def device_id_patch_put(id):
   db.session.add(device)
   db.session.commit()
   return jsonify(device.to_json())
+
+
+@devices.route('/devices/<int:id>', methods=['DELETE'])
+@multi_auth.login_required
+def device_id_delete(id):
+  username = multi_auth.current_user()
+  device = query_device(id, username)
+  db.session.delete(device)
+  db.session.commit()
+  return jsonify(dict())
 
 
 @devices.route('/devices/<int:id>/report', methods=['GET'])

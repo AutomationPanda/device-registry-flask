@@ -58,7 +58,7 @@ def _build_user(test_config, index):
 
 
 # --------------------------------------------------------------------------------
-# Fixtures
+# Config Fixtures
 # --------------------------------------------------------------------------------
 
 @pytest.fixture(scope='session')
@@ -82,6 +82,21 @@ def user1(test_config):
 def user2(test_config):
   return _build_user(test_config, 1)
 
+
+# --------------------------------------------------------------------------------
+# Session Fixtures
+# --------------------------------------------------------------------------------
+
+@pytest.fixture
+def user1_session(base_url, user1):
+  session = requests.Session()
+  session.auth = (user1.username, user1.password)
+  return session
+
+
+# --------------------------------------------------------------------------------
+# Token Fixtures
+# --------------------------------------------------------------------------------
 
 @pytest.fixture
 def user1_token(base_url, user1):
