@@ -1,7 +1,9 @@
 """
 This module contains CRUD integration tests for devices.
+CRUD = Create, Retrieve, Update, Delete.
+Positive and negative cases are included.
 Thorough CRUD tests require more than one call per test.
-Therefore, their names do not parallel resource paths.
+Therefore, their names do not mirror resource paths.
 """
 
 # --------------------------------------------------------------------------------
@@ -104,24 +106,6 @@ def verify_device(actual, expected):
     assert field in actual
     assert actual[field] == expected[field]
 
-
-# --------------------------------------------------------------------------------
-# CRUD Tests
-#
-# CRUD: Create, Retrieve, Update, Delete.
-# These tests provide a starting pattern.
-# They can be used for databases, service APIs, or Web UIs.
-# Always leave no trace: create new records and delete them after testing.
-# Isolate each interaction.
-# Mocking or behind-the-curtain calls can be done for setup.
-#
-# A note about deleting devices:
-# If every test run has a "new" or "fresh" database,
-# then deleting devices after each test is not required.
-# However, if the database persists,
-# then it might be worthwhile to make each test delete the devices it creates,
-# in order to prevent the database from overflowing with disposable data.
-# --------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------
 # Create Tests
