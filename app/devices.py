@@ -47,8 +47,14 @@ def query_device(id, username):
 @devices.route('/devices/', methods=['GET'])
 @multi_auth.login_required
 def devices_get():
-  username = multi_auth.current_user()
-  ds = Device.query.filter_by(owner=username)
+  filter_args = dict()
+  filter_args['owner'] = multi_auth.current_user()
+
+  for field in ['id', 'name', 'location', 'type', 'model', 'serial_number']:
+    if value := request.args.get(field):
+      filter_args[field] = value
+
+  ds = Device.query.filter_by(**filter_args)
   device_dict = {'devices': [device.to_json() for device in ds]}
   return jsonify(device_dict)
 
