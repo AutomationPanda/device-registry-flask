@@ -29,16 +29,16 @@ class Device(db.Model):
     """Raises a ValidationError if 'json_data' cannot be converted into a Device object."""
 
     if not json_data:
-      raise ValidationError(f'The device is missing all data')
+      raise ValidationError(f'The request body is missing all fields')
 
     valid_fields = ['name', 'location', 'type', 'model', 'serial_number']
     missing_fields = [key for key in valid_fields if key not in json_data]
     if missing_fields:
-      raise ValidationError(f'The device has missing fields: {", ".join(missing_fields)}')
+      raise ValidationError(f'The request body has missing fields: {", ".join(missing_fields)}')
 
     invalid_fields = [key for key in json_data if key not in valid_fields]
     if invalid_fields:
-      raise ValidationError(f'The device has invalid fields: {", ".join(invalid_fields)}')
+      raise ValidationError(f'The request body has invalid fields: {", ".join(invalid_fields)}')
 
   @staticmethod
   def from_json(json_data, owner):
@@ -70,11 +70,11 @@ class Device(db.Model):
   def patch_from_json(self, json_data):
     """Patches this Device object's 'name' and 'location' fields from 'json_data'."""
     if not json_data:
-        raise ValidationError(f'The request is missing all data')
+        raise ValidationError(f'The request body is missing all fields')
 
     invalid_keys = [key for key in json_data.keys() if key != 'name' and key != 'location']
     if invalid_keys:
-      raise ValidationError(f'Invalid fields: {", ".join(invalid_keys)}')
+      raise ValidationError(f'The request body has invalid fields: {", ".join(invalid_keys)}')
 
     if 'name' in json_data:
       self.name = json_data['name']
