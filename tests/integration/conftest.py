@@ -10,41 +10,10 @@ import json
 import pytest
 import requests
 import time
+import warnings
 
-
-# --------------------------------------------------------------------------------
-# Class: BaseUrl
-# --------------------------------------------------------------------------------
-
-class BaseUrl:
-  
-  def __init__(self, base_url):
-    self.base_url = base_url
-  
-  def concat(self, resource):
-    return self.base_url + resource
-
-
-# --------------------------------------------------------------------------------
-# Class: User
-# --------------------------------------------------------------------------------
-
-class User:
-
-  def __init__(self, username, password):
-    self.username = username
-    self.password = password
-
-
-# --------------------------------------------------------------------------------
-# Class: TokenHolder
-# --------------------------------------------------------------------------------
-
-class TokenHolder:
-
-  def __init__(self, token, start_time):
-    self.token = token
-    self.start_time = start_time
+from testlib.api import BaseUrl, User, TokenHolder
+from testlib.devices import verify_device_data
 
 
 # --------------------------------------------------------------------------------
@@ -143,6 +112,7 @@ def user1_token_shared(test_config, token_holder):
   
   return token_holder.token
 
+
 # --------------------------------------------------------------------------------
 # Device Fixtures
 # --------------------------------------------------------------------------------
@@ -167,3 +137,31 @@ def light_data():
     'model': 'GenLight 64B',
     'serial_number': 'GL64B-99987'
   }
+
+
+@pytest.fixture
+def thermostat(base_url, user1, user1_session, thermostat_data):
+
+  # Create
+  device_url = base_url.concat('/devices/')
+  post_response = user1_session.post(device_url, json=thermostat_data)
+  post_data = post_response.json()
+  
+  # Verify create
+  assert post_response.status_code == 200
+  thermostat_data['owner'] = user1.username
+  verify_device_data(post_data, thermostat_data)
+
+  # Return created device
+  yield post_data
+
+  # Cleanup if device still exists
+  if 'id' in post_data:
+
+    # Delete
+    delete_url = base_url.concat(f'/devices/{post_data["id"]}')
+    delete_response = user1_session.delete(delete_url)
+    
+    # Issue warning for delete failure
+    if delete_response.status_code != 200:
+      warnings.warn(UserWarning(f'Deleting device with id={{post_data["id"]}} failed'))

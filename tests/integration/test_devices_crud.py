@@ -20,7 +20,8 @@ NONEXISTENT_ID = 999999999
 
 import pytest
 import requests
-import warnings
+
+from testlib.devices import verify_device_data
 
 
 # --------------------------------------------------------------------------------
@@ -33,56 +34,6 @@ def thermostat_patch_data():
     'name': 'Upstairs Thermostat',
     'location': 'Master Bedroom'
   }
-
-
-@pytest.fixture
-def thermostat(base_url, user1, user1_session, thermostat_data):
-
-  # Create
-  device_url = base_url.concat('/devices/')
-  post_response = user1_session.post(device_url, json=thermostat_data)
-  post_data = post_response.json()
-  
-  # Verify create
-  assert post_response.status_code == 200
-  thermostat_data['owner'] = user1.username
-  verify_device(post_data, thermostat_data)
-
-  # Return created device
-  yield post_data
-
-  # Cleanup if device still exists
-  if 'id' in post_data:
-
-    # Delete
-    delete_url = base_url.concat(f'/devices/{post_data["id"]}')
-    delete_response = user1_session.delete(delete_url)
-    
-    # Issue warning for delete failure
-    if delete_response.status_code != 200:
-      warnings.warn(UserWarning(f'Deleting device with id={{post_data["id"]}} failed'))
-
-
-# --------------------------------------------------------------------------------
-# Verification Functions
-# --------------------------------------------------------------------------------
-
-def verify_device(actual, expected):
-
-  # Verify ID
-  if 'id' in expected:
-    assert actual['id'] == expected['id']
-  else:
-    assert isinstance(actual['id'], int)
-  
-  # Verify field length
-  fields = ['name', 'location', 'type', 'model', 'serial_number', 'owner']
-  assert len(actual) == len(fields) + 1
-
-  # Verify field values
-  for field in fields:
-    assert field in actual
-    assert actual[field] == expected[field]
 
 
 # --------------------------------------------------------------------------------
@@ -98,7 +49,7 @@ def test_create_and_retrieve_device(base_url, user1_session, thermostat):
 
   # Verify retrieve
   assert get_response.status_code == 200
-  verify_device(get_data, thermostat)
+  verify_device_data(get_data, thermostat)
 
 
 def test_create_with_no_body_yields_error(base_url, user1_session):
@@ -186,7 +137,7 @@ def test_update_device_via_put(base_url, user1, user1_session, thermostat, light
   assert put_response.status_code == 200
   light_data['id'] = thermostat['id']
   light_data['owner'] = user1.username
-  verify_device(put_data, light_data)
+  verify_device_data(put_data, light_data)
 
   # Retrieve
   device_id_url = base_url.concat(f'/devices/{light_data["id"]}')
@@ -195,7 +146,7 @@ def test_update_device_via_put(base_url, user1, user1_session, thermostat, light
 
   # Verify retrieve
   assert get_response.status_code == 200
-  verify_device(get_data, put_data)
+  verify_device_data(get_data, put_data)
 
 
 def test_update_device_via_put_with_no_body_yields_error(base_url, user1_session, thermostat):
@@ -284,7 +235,7 @@ def test_update_device_via_patch(
   thermostat_patch_data['model'] = thermostat['model']
   thermostat_patch_data['serial_number'] = thermostat['serial_number']
   thermostat_patch_data['owner'] = user1.username
-  verify_device(patch_data, thermostat_patch_data)
+  verify_device_data(patch_data, thermostat_patch_data)
 
   # Retrieve
   device_id_url = base_url.concat(f'/devices/{patch_data["id"]}')
@@ -293,7 +244,7 @@ def test_update_device_via_patch(
 
   # Verify retrieve
   assert get_response.status_code == 200
-  verify_device(get_data, patch_data)
+  verify_device_data(get_data, patch_data)
 
 
 @pytest.mark.parametrize(
@@ -315,7 +266,7 @@ def test_update_device_via_patch_with_one_field(
   # Verify patch
   assert patch_response.status_code == 200
   thermostat_data[field] = value
-  verify_device(patch_data, thermostat_data)
+  verify_device_data(patch_data, thermostat_data)
 
   # Retrieve
   device_id_url = base_url.concat(f'/devices/{patch_data["id"]}')
@@ -324,7 +275,7 @@ def test_update_device_via_patch_with_one_field(
 
   # Verify retrieve
   assert get_response.status_code == 200
-  verify_device(get_data, patch_data)
+  verify_device_data(get_data, patch_data)
 
 
 def test_update_device_via_patch_with_no_body_yields_error(
