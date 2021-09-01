@@ -33,8 +33,10 @@ It is the web service used for Chapter 6 in *The Way To Test Software* by Andrew
 4. Testing multiple objects with '/devices/'
    * Creating and deleting multiple objects
    * Query parameters for large data
-   * Security tests with multiple users
-5. Additional REST API factors
+5. Authorization tests with '/devices/'
+   * Multiple users
+   * Multiple methods
+6. Additional REST API factors
    * File downloads
    * HEAD and OPTIONS for GET
    * Invalid methods

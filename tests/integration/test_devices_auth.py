@@ -56,3 +56,15 @@ def test_devices_get_with_shared_token_auth(base_url, user1_token_shared):
 
   assert response.status_code == 200
   assert 'devices' in data
+
+
+# --------------------------------------------------------------------------------
+# Authorization Tests
+# --------------------------------------------------------------------------------
+
+# One user cannot access another user's devices
+#   * GET /devices/
+#   * GET /devices/<id>
+#   * PATCH /devices/<id>
+#   * PUT /devices/<id>
+#   * DELETE /devices/<id>
