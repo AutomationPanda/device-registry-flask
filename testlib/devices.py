@@ -10,7 +10,7 @@ import warnings
 
 
 # --------------------------------------------------------------------------------
-# Verification Function
+# Verification Functions
 # --------------------------------------------------------------------------------
 
 def verify_device_data(actual, expected):
@@ -30,6 +30,28 @@ def verify_device_data(actual, expected):
     assert field in actual
     assert actual[field] == expected[field]
 
+
+def verify_devices(actual_list, expected_list, excluding=None):
+  
+  # Verify the device count
+  assert len(actual_list) >= len(expected_list)
+
+  # Create a mapping of IDs to data for actual devices
+  # This will make verifications much more efficient
+  actual_map = {device['id']: device for device in actual_list}
+
+  # Verify each expected device is in the actual list
+  # Note that other devices could also be in the actual list, and that's okay
+  for expected in expected_list:
+    assert expected['id'] in actual_map
+    actual = actual_map[expected['id']]
+    verify_device_data(actual, expected)
+  
+  # Verify excluded device IDs are not in the actual list
+  if excluding:
+    for excluded in excluding:
+      assert excluded not in actual_map
+      
 
 # --------------------------------------------------------------------------------
 # Class: DeviceCreator
@@ -79,3 +101,4 @@ class DeviceCreator:
   def cleanup(self):
     for id in self.created:
       self.delete(self.created[id], id)
+    self.created = dict()
