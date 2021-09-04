@@ -12,7 +12,7 @@ import requests
 import time
 
 from testlib.api import BaseUrl, User, TokenHolder
-from testlib.devices import create_device, delete_device, verify_device_data
+from testlib.devices import DeviceCreator, verify_device_data
 
 
 # --------------------------------------------------------------------------------
@@ -149,9 +149,23 @@ def light_data():
 
 
 @pytest.fixture
-def thermostat(base_url, user, session, thermostat_data):
-  device_data = create_device(base_url, user, session, thermostat_data)
-  yield device_data
+def fridge_data():
+  return {
+    'name': 'Family Fridge',
+    'location': 'Kitchen',
+    'type': 'Refrigerator',
+    'model': 'El Gee Mondo21',
+    'serial_number': 'LGM-20201'
+  }
 
-  if 'id' in device_data:
-    delete_device(base_url, session, device_data['id'])
+
+@pytest.fixture
+def device_creator(base_url):
+  creator = DeviceCreator(base_url)
+  yield creator
+  creator.cleanup()
+
+
+@pytest.fixture
+def thermostat(device_creator, session, thermostat_data):
+  return device_creator.create(session, thermostat_data)

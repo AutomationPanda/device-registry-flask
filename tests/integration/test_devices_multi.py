@@ -1,6 +1,9 @@
 """
 This module contains integration tests for the '/devices/' resource.
 These tests cover GET responses involving multiple devices.
+We cannot guarantee that the devices we create will be the only devices in the system.
+For example, if tests run in parallel, then other tests might create new devices.
+Therefore, test assertions must check only what is covered by the test.
 """
 
 # --------------------------------------------------------------------------------
@@ -12,19 +15,18 @@ import requests
 
 
 # --------------------------------------------------------------------------------
-# Authentication Tests
+# Tests for Multiple Devices
 # --------------------------------------------------------------------------------
 
-# def test_devices_get_empty(base_url, user1_session):
+# def test_multiple_device_creation_universally(base_url, session):
 #   url = base_url.concat('/devices/')
-#   response = user1_session.get(url)
+#   response = session.get(url)
 #   data = response.json()
 
 #   assert response.status_code == 200
 #   assert 'devices' in data
 
 
-# We cannot guarantee that the devices we create are the only devices in the system.
 # Create new test data in this file to prevent global changes from breaking these tests.
 
 # Create and get exactly 3, but describe warning about parallel testing

@@ -255,7 +255,7 @@ def test_update_device_via_patch(
   ]
 )
 def test_update_device_via_patch_with_one_field(
-  field, value, base_url, session, user, thermostat, thermostat_data):
+  field, value, base_url, session, thermostat, thermostat_data):
 
   # Patch
   request_data = {field: value}
@@ -335,7 +335,7 @@ def test_update_device_via_patch_with_invalid_field_yields_error(
 # Delete Tests
 # --------------------------------------------------------------------------------
 
-def test_delete_device(base_url, session, thermostat):
+def test_delete_device(base_url, session, thermostat, device_creator):
 
   # Delete
   device_id_url = base_url.concat(f'/devices/{thermostat["id"]}')
@@ -347,7 +347,7 @@ def test_delete_device(base_url, session, thermostat):
   assert not delete_data
 
   # Mark device as deleted
-  del thermostat['id']
+  device_creator.remove(thermostat['id'])
 
 
 def test_delete_nonexistent_device(base_url, session):
