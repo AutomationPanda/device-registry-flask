@@ -28,9 +28,9 @@ def test_devices_get_with_no_auth(base_url):
   assert data['message'] == 'Invalid credentials'
 
 
-def test_devices_get_with_basic_auth(base_url, user1):
+def test_devices_get_with_basic_auth(base_url, user):
   url = base_url.concat('/devices/')
-  auth = (user1.username, user1.password)
+  auth = (user.username, user.password)
   response = requests.get(url, auth=auth)
   data = response.json()
 
@@ -38,9 +38,9 @@ def test_devices_get_with_basic_auth(base_url, user1):
   assert 'devices' in data
 
 
-def test_devices_get_with_token_auth(base_url, user1_token):
+def test_devices_get_with_token_auth(base_url, auth_token):
   url = base_url.concat('/devices/')
-  headers = {'Authorization': 'Bearer ' + user1_token}
+  headers = {'Authorization': 'Bearer ' + auth_token}
   response = requests.get(url, headers=headers)
   data = response.json()
 
@@ -48,9 +48,9 @@ def test_devices_get_with_token_auth(base_url, user1_token):
   assert 'devices' in data
 
 
-def test_devices_get_with_shared_token_auth(base_url, user1_token_shared):
+def test_devices_get_with_shared_token_auth(base_url, shared_auth_token):
   url = base_url.concat('/devices/')
-  headers = {'Authorization': 'Bearer ' + user1_token_shared}
+  headers = {'Authorization': 'Bearer ' + shared_auth_token}
   response = requests.get(url, headers=headers)
   data = response.json()
 

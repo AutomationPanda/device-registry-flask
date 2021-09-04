@@ -25,8 +25,14 @@ def _build_user(test_config, index):
   return user
 
 
+def _build_session(user):
+  session = requests.Session()
+  session.auth = (user.username, user.password)
+  return session
+
+
 # --------------------------------------------------------------------------------
-# Config Fixtures
+# Config Fixture
 # --------------------------------------------------------------------------------
 
 @pytest.fixture(scope='session')
@@ -39,6 +45,11 @@ def test_config():
 @pytest.fixture
 def base_url(test_config):
   return BaseUrl(test_config['base_url'])
+
+
+@pytest.fixture
+def user(test_config, user_index=0):
+  return _build_user(test_config, user_index)
 
 
 @pytest.fixture
@@ -56,17 +67,18 @@ def user2(test_config):
 # --------------------------------------------------------------------------------
 
 @pytest.fixture
-def user1_session(base_url, user1):
-  session = requests.Session()
-  session.auth = (user1.username, user1.password)
-  return session
+def session(user):
+  return _build_session(user)
 
 
 @pytest.fixture
-def user2_session(base_url, user2):
-  session = requests.Session()
-  session.auth = (user2.username, user2.password)
-  return session
+def user1_session(user1):
+  return _build_session(user1)
+
+
+@pytest.fixture
+def user2_session(user2):
+  return _build_session(user2)
 
 
 # --------------------------------------------------------------------------------
@@ -74,14 +86,15 @@ def user2_session(base_url, user2):
 # --------------------------------------------------------------------------------
 
 @pytest.fixture
-def user1_token(base_url, user1):
+def auth_token(base_url, user):
   url = base_url.concat('/authenticate/')
-  auth = (user1.username, user1.password)
+  auth = (user.username, user.password)
   response = requests.get(url, auth=auth)
   data = response.json()
 
   assert response.status_code == 200
   assert 'token' in data
+
   return data['token']
 
 
@@ -91,15 +104,12 @@ def token_holder():
 
 
 @pytest.fixture
-def user1_token_shared(test_config, token_holder):
+def shared_auth_token(base_url, user, token_holder):
   current_time = time.time()
 
-  if not token_holder.token or current_time - token_holder.start_time >= 3600:    
-    base_url = BaseUrl(test_config['base_url'])
-    user1 = _build_user(test_config, 0)
-
+  if not token_holder.token or current_time - token_holder.start_time >= 3600:
     url = base_url.concat('/authenticate/')
-    auth = (user1.username, user1.password)
+    auth = (user.username, user.password)
     response = requests.get(url, auth=auth)
     data = response.json()
 
@@ -139,9 +149,9 @@ def light_data():
 
 
 @pytest.fixture
-def thermostat(base_url, user1, user1_session, thermostat_data):
-  device_data = create_device(base_url, user1, user1_session, thermostat_data)
+def thermostat(base_url, user, session, thermostat_data):
+  device_data = create_device(base_url, user, session, thermostat_data)
   yield device_data
 
   if 'id' in device_data:
-    delete_device(base_url, user1_session, device_data['id'])
+    delete_device(base_url, session, device_data['id'])

@@ -40,11 +40,11 @@ def thermostat_patch_data():
 # Create Tests
 # --------------------------------------------------------------------------------
 
-def test_create_and_retrieve_device(base_url, user1_session, thermostat):
+def test_create_and_retrieve_device(base_url, session, thermostat):
 
   # Retrieve
   device_id_url = base_url.concat(f'/devices/{thermostat["id"]}')
-  get_response = user1_session.get(device_id_url)
+  get_response = session.get(device_id_url)
   get_data = get_response.json()
 
   # Verify retrieve
@@ -52,11 +52,11 @@ def test_create_and_retrieve_device(base_url, user1_session, thermostat):
   verify_device_data(get_data, thermostat)
 
 
-def test_create_with_no_body_yields_error(base_url, user1_session):
+def test_create_with_no_body_yields_error(base_url, session):
 
   # Attempt create
   device_url = base_url.concat('/devices/')
-  post_response = user1_session.post(device_url)
+  post_response = session.post(device_url)
   post_data = post_response.json()
   
   # Verify error
@@ -74,12 +74,12 @@ def test_create_with_no_body_yields_error(base_url, user1_session):
   ]
 )
 def test_create_with_invalid_field_yields_error(
-  field, value, base_url, user1_session, thermostat_data):
+  field, value, base_url, session, thermostat_data):
   thermostat_data[field] = value
 
   # Attempt create
   device_url = base_url.concat('/devices/')
-  post_response = user1_session.post(device_url, json=thermostat_data)
+  post_response = session.post(device_url, json=thermostat_data)
   post_data = post_response.json()
   
   # Verify error
@@ -92,12 +92,12 @@ def test_create_with_invalid_field_yields_error(
   'field',
   ['name', 'location', 'type', 'model', 'serial_number']
 )
-def test_create_with_missing_field_yields_error(field, base_url, user1_session, thermostat_data):
+def test_create_with_missing_field_yields_error(field, base_url, session, thermostat_data):
   del thermostat_data[field]
 
   # Attempt create
   device_url = base_url.concat('/devices/')
-  post_response = user1_session.post(device_url, json=thermostat_data)
+  post_response = session.post(device_url, json=thermostat_data)
   post_data = post_response.json()
   
   # Verify error
@@ -110,11 +110,11 @@ def test_create_with_missing_field_yields_error(field, base_url, user1_session, 
 # Retrieve Tests
 # --------------------------------------------------------------------------------
 
-def test_retrieve_nonexistent_device_yields_error(base_url, user1_session):
+def test_retrieve_nonexistent_device_yields_error(base_url, session):
 
   # Attempt retrieve
   device_url = base_url.concat(f'/devices/{NONEXISTENT_ID}')
-  get_response = user1_session.get(device_url)
+  get_response = session.get(device_url)
   get_data = get_response.json()
 
   # Verify error
@@ -126,22 +126,22 @@ def test_retrieve_nonexistent_device_yields_error(base_url, user1_session):
 # Update Tests for PUT
 # --------------------------------------------------------------------------------
 
-def test_update_device_via_put(base_url, user1, user1_session, thermostat, light_data):
+def test_update_device_via_put(base_url, user, session, thermostat, light_data):
 
   # Put
   device_url = base_url.concat(f'/devices/{thermostat["id"]}')
-  put_response = user1_session.put(device_url, json=light_data)
+  put_response = session.put(device_url, json=light_data)
   put_data = put_response.json()
 
   # Verify put
   assert put_response.status_code == 200
   light_data['id'] = thermostat['id']
-  light_data['owner'] = user1.username
+  light_data['owner'] = user.username
   verify_device_data(put_data, light_data)
 
   # Retrieve
   device_id_url = base_url.concat(f'/devices/{light_data["id"]}')
-  get_response = user1_session.get(device_id_url)
+  get_response = session.get(device_id_url)
   get_data = get_response.json()
 
   # Verify retrieve
@@ -149,11 +149,11 @@ def test_update_device_via_put(base_url, user1, user1_session, thermostat, light
   verify_device_data(get_data, put_data)
 
 
-def test_update_device_via_put_with_no_body_yields_error(base_url, user1_session, thermostat):
+def test_update_device_via_put_with_no_body_yields_error(base_url, session, thermostat):
 
   # Attempt put
   device_url = base_url.concat(f'/devices/{thermostat["id"]}')
-  put_response = user1_session.put(device_url)
+  put_response = session.put(device_url)
   put_data = put_response.json()
 
   # Verify error
@@ -162,11 +162,11 @@ def test_update_device_via_put_with_no_body_yields_error(base_url, user1_session
   put_data['message'] == 'The request body is missing all fields'
 
 
-def test_update_nonexistent_device_via_put_yields_error(base_url, user1_session, light_data):
+def test_update_nonexistent_device_via_put_yields_error(base_url, session, light_data):
 
   # Attempt put
   device_url = base_url.concat(f'/devices/{NONEXISTENT_ID}')
-  put_response = user1_session.put(device_url, json=light_data)
+  put_response = session.put(device_url, json=light_data)
   put_data = put_response.json()
 
   # Verify error
@@ -183,12 +183,12 @@ def test_update_nonexistent_device_via_put_yields_error(base_url, user1_session,
   ]
 )
 def test_update_device_via_put_with_invalid_field_yields_error(
-  field, value, base_url, user1_session, thermostat, light_data):
+  field, value, base_url, session, thermostat, light_data):
   light_data[field] = value
 
   # Attempt put
   device_url = base_url.concat(f'/devices/{thermostat["id"]}')
-  put_response = user1_session.put(device_url, json=light_data)
+  put_response = session.put(device_url, json=light_data)
   put_data = put_response.json()
 
   # Verify error
@@ -202,12 +202,12 @@ def test_update_device_via_put_with_invalid_field_yields_error(
   ['name', 'location', 'type', 'model', 'serial_number']
 )
 def test_update_device_via_put_with_missing_field_yields_error(
-  field, base_url, user1_session, thermostat, light_data):
+  field, base_url, session, thermostat, light_data):
   del light_data[field]
 
   # Attempt put
   device_url = base_url.concat(f'/devices/{thermostat["id"]}')
-  put_response = user1_session.put(device_url, json=light_data)
+  put_response = session.put(device_url, json=light_data)
   put_data = put_response.json()
 
   # Verify error
@@ -221,11 +221,11 @@ def test_update_device_via_put_with_missing_field_yields_error(
 # --------------------------------------------------------------------------------
 
 def test_update_device_via_patch(
-  base_url, user1, user1_session, thermostat, thermostat_patch_data):
+  base_url, user, session, thermostat, thermostat_patch_data):
 
   # Patch
   device_url = base_url.concat(f'/devices/{thermostat["id"]}')
-  patch_response = user1_session.patch(device_url, json=thermostat_patch_data)
+  patch_response = session.patch(device_url, json=thermostat_patch_data)
   patch_data = patch_response.json()
 
   # Verify patch
@@ -234,12 +234,12 @@ def test_update_device_via_patch(
   thermostat_patch_data['type'] = thermostat['type']
   thermostat_patch_data['model'] = thermostat['model']
   thermostat_patch_data['serial_number'] = thermostat['serial_number']
-  thermostat_patch_data['owner'] = user1.username
+  thermostat_patch_data['owner'] = user.username
   verify_device_data(patch_data, thermostat_patch_data)
 
   # Retrieve
   device_id_url = base_url.concat(f'/devices/{patch_data["id"]}')
-  get_response = user1_session.get(device_id_url)
+  get_response = session.get(device_id_url)
   get_data = get_response.json()
 
   # Verify retrieve
@@ -255,12 +255,12 @@ def test_update_device_via_patch(
   ]
 )
 def test_update_device_via_patch_with_one_field(
-  field, value, base_url, user1_session, user1, thermostat, thermostat_data):
+  field, value, base_url, session, user, thermostat, thermostat_data):
 
   # Patch
   request_data = {field: value}
   device_url = base_url.concat(f'/devices/{thermostat["id"]}')
-  patch_response = user1_session.patch(device_url, json=request_data)
+  patch_response = session.patch(device_url, json=request_data)
   patch_data = patch_response.json()
 
   # Verify patch
@@ -270,7 +270,7 @@ def test_update_device_via_patch_with_one_field(
 
   # Retrieve
   device_id_url = base_url.concat(f'/devices/{patch_data["id"]}')
-  get_response = user1_session.get(device_id_url)
+  get_response = session.get(device_id_url)
   get_data = get_response.json()
 
   # Verify retrieve
@@ -279,11 +279,11 @@ def test_update_device_via_patch_with_one_field(
 
 
 def test_update_device_via_patch_with_no_body_yields_error(
-  base_url, user1_session, thermostat):
+  base_url, session, thermostat):
 
   # Attempt patch
   device_url = base_url.concat(f'/devices/{thermostat["id"]}')
-  patch_response = user1_session.patch(device_url)
+  patch_response = session.patch(device_url)
   patch_data = patch_response.json()
 
   # Verify error
@@ -293,11 +293,11 @@ def test_update_device_via_patch_with_no_body_yields_error(
 
 
 def test_update_nonexistent_device_via_patch_yields_error(
-  base_url, user1_session, thermostat_patch_data):
+  base_url, session, thermostat_patch_data):
 
   # Attempt patch
   device_url = base_url.concat(f'/devices/{NONEXISTENT_ID}')
-  patch_response = user1_session.patch(device_url, json=thermostat_patch_data)
+  patch_response = session.patch(device_url, json=thermostat_patch_data)
   patch_data = patch_response.json()
 
   # Verify error
@@ -317,12 +317,12 @@ def test_update_nonexistent_device_via_patch_yields_error(
   ]
 )
 def test_update_device_via_patch_with_invalid_field_yields_error(
-  field, value, base_url, user1_session, thermostat, thermostat_patch_data):
+  field, value, base_url, session, thermostat, thermostat_patch_data):
   thermostat_patch_data[field] = value
 
   # Attempt patch
   device_url = base_url.concat(f'/devices/{thermostat["id"]}')
-  patch_response = user1_session.patch(device_url, json=thermostat_patch_data)
+  patch_response = session.patch(device_url, json=thermostat_patch_data)
   patch_data = patch_response.json()
 
   # Verify error
@@ -335,11 +335,11 @@ def test_update_device_via_patch_with_invalid_field_yields_error(
 # Delete Tests
 # --------------------------------------------------------------------------------
 
-def test_delete_device(base_url, user1_session, thermostat):
+def test_delete_device(base_url, session, thermostat):
 
   # Delete
   device_id_url = base_url.concat(f'/devices/{thermostat["id"]}')
-  delete_response = user1_session.delete(device_id_url)
+  delete_response = session.delete(device_id_url)
   delete_data = delete_response.json()
 
   # Verify delete
@@ -350,11 +350,11 @@ def test_delete_device(base_url, user1_session, thermostat):
   del thermostat['id']
 
 
-def test_delete_nonexistent_device(base_url, user1_session):
+def test_delete_nonexistent_device(base_url, session):
 
   # Delete
   device_id_url = base_url.concat(f'/devices/{NONEXISTENT_ID}')
-  delete_response = user1_session.delete(device_id_url)
+  delete_response = session.delete(device_id_url)
   delete_data = delete_response.json()
 
   # Verify error
