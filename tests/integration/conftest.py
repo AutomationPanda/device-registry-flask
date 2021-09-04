@@ -164,8 +164,3 @@ def device_creator(base_url):
   creator = DeviceCreator(base_url)
   yield creator
   creator.cleanup()
-
-
-@pytest.fixture
-def thermostat(device_creator, session, thermostat_data):
-  return device_creator.create(session, thermostat_data)

@@ -36,6 +36,11 @@ def thermostat_patch_data():
   }
 
 
+@pytest.fixture
+def thermostat(device_creator, session, thermostat_data):
+  return device_creator.create(session, thermostat_data)
+
+
 # --------------------------------------------------------------------------------
 # Create Tests
 # --------------------------------------------------------------------------------
