@@ -48,17 +48,12 @@ def base_url(test_config):
 
 
 @pytest.fixture
-def user(test_config, user_index=0):
-  return _build_user(test_config, user_index)
-
-
-@pytest.fixture
-def user1(test_config):
+def user(test_config):
   return _build_user(test_config, 0)
 
 
 @pytest.fixture
-def user2(test_config):
+def alt_user(test_config):
   return _build_user(test_config, 1)
 
 
@@ -72,13 +67,8 @@ def session(user):
 
 
 @pytest.fixture
-def user1_session(user1):
-  return _build_session(user1)
-
-
-@pytest.fixture
-def user2_session(user2):
-  return _build_session(user2)
+def alt_session(alt_user):
+  return _build_session(alt_user)
 
 
 # --------------------------------------------------------------------------------
@@ -160,7 +150,20 @@ def fridge_data():
 
 
 @pytest.fixture
+def thermostat_patch_data():
+  return {
+    'name': 'Upstairs Thermostat',
+    'location': 'Master Bedroom'
+  }
+
+
+@pytest.fixture
 def device_creator(base_url):
   creator = DeviceCreator(base_url)
   yield creator
   creator.cleanup()
+
+
+@pytest.fixture
+def thermostat(device_creator, session, thermostat_data):
+  return device_creator.create(session, thermostat_data)

@@ -25,23 +25,6 @@ from testlib.devices import verify_device_data
 
 
 # --------------------------------------------------------------------------------
-# Fixtures
-# --------------------------------------------------------------------------------
-
-@pytest.fixture
-def thermostat_patch_data():
-  return {
-    'name': 'Upstairs Thermostat',
-    'location': 'Master Bedroom'
-  }
-
-
-@pytest.fixture
-def thermostat(device_creator, session, thermostat_data):
-  return device_creator.create(session, thermostat_data)
-
-
-# --------------------------------------------------------------------------------
 # Create Tests
 # --------------------------------------------------------------------------------
 
@@ -66,8 +49,8 @@ def test_create_with_no_body_yields_error(base_url, session):
   
   # Verify error
   assert post_response.status_code == 400
-  post_data['error'] == 'bad request'
-  post_data['message'] == 'The request body is missing all fields'
+  assert post_data['error'] == 'bad request'
+  assert post_data['message'] == 'request body is missing all fields'
 
 
 @pytest.mark.parametrize(
@@ -90,7 +73,7 @@ def test_create_with_invalid_field_yields_error(
   # Verify error
   assert post_response.status_code == 400
   assert post_data['error'] == 'bad request'
-  assert post_data['message'] == f'The request body has invalid fields: {field}'
+  assert post_data['message'] == f'request body has invalid fields: {field}'
 
 
 @pytest.mark.parametrize(
@@ -108,7 +91,7 @@ def test_create_with_missing_field_yields_error(field, base_url, session, thermo
   # Verify error
   assert post_response.status_code == 400
   assert post_data['error'] == 'bad request'
-  assert post_data['message'] == f'The request body has missing fields: {field}'
+  assert post_data['message'] == f'request body has missing fields: {field}'
 
 
 # --------------------------------------------------------------------------------
@@ -163,8 +146,8 @@ def test_update_device_via_put_with_no_body_yields_error(base_url, session, ther
 
   # Verify error
   assert put_response.status_code == 400
-  put_data['error'] == 'bad request'
-  put_data['message'] == 'The request body is missing all fields'
+  assert put_data['error'] == 'bad request'
+  assert put_data['message'] == 'request body is missing all fields'
 
 
 def test_update_nonexistent_device_via_put_yields_error(base_url, session, light_data):
@@ -199,7 +182,7 @@ def test_update_device_via_put_with_invalid_field_yields_error(
   # Verify error
   assert put_response.status_code == 400
   assert put_data['error'] == 'bad request'
-  assert put_data['message'] == f'The request body has invalid fields: {field}'
+  assert put_data['message'] == f'request body has invalid fields: {field}'
 
 
 @pytest.mark.parametrize(
@@ -218,7 +201,7 @@ def test_update_device_via_put_with_missing_field_yields_error(
   # Verify error
   assert put_response.status_code == 400
   assert put_data['error'] == 'bad request'
-  assert put_data['message'] == f'The request body has missing fields: {field}'
+  assert put_data['message'] == f'request body has missing fields: {field}'
 
 
 # --------------------------------------------------------------------------------
@@ -293,8 +276,8 @@ def test_update_device_via_patch_with_no_body_yields_error(
 
   # Verify error
   assert patch_response.status_code == 400
-  patch_data['error'] == 'bad request'
-  patch_data['message'] == 'The request body is missing all fields'
+  assert patch_data['error'] == 'bad request'
+  assert patch_data['message'] == 'request body is missing all fields'
 
 
 def test_update_nonexistent_device_via_patch_yields_error(
@@ -333,7 +316,7 @@ def test_update_device_via_patch_with_invalid_field_yields_error(
   # Verify error
   assert patch_response.status_code == 400
   assert patch_data['error'] == 'bad request'
-  assert patch_data['message'] == f'The request body has invalid fields: {field}'
+  assert patch_data['message'] == f'request body has invalid fields: {field}'
 
 
 # --------------------------------------------------------------------------------
