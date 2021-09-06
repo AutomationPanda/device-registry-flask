@@ -7,7 +7,7 @@ WiFi routers, voice assistants, thermostats, light switches, and even appliances
 
 The Device Registry Service is written in Python using Flask, and it stores data in a SQLite database.
 It is the web service used for Chapter 6 in *The Way To Test Software* by Andrew Knight.
-Note that it is not a *real* web service, but rather one to use as a teaching example.
+Note that it is not a "real" web service, but rather one to use as a teaching example.
 
 
 ## Installation
@@ -18,7 +18,7 @@ To install it:
 
 1. Install [Python](https://www.python.org/) 3.8 or higher.
 2. Clone the GitHub repository on to your local machine.
-3. From the command line:
+3. Install dependency packages from the command line:
    1. Change directory to the project's root directory.
    2. Run `pip install requirements.txt` to install all dependencies.
 
@@ -51,22 +51,6 @@ If you load that address in a web browser, you should see a page with the follow
 "This is a device registry web service. It provides a REST API for managing smart devices."
 
 
-## Setting configuration options
-
-The Device Registry Service stores all its configuration options in `config.py`.
-Each configuration option has a default value.
-The following configuration options may be overridden using environment variables:
-
-* `SECRET_KEY`: the secret key used for app security
-* `AUTH_USERNAME1`: the username for user 1
-* `AUTH_PASSWORD1`: the password for user 1
-* `AUTH_USERNAME2`: the username for user 2
-* `AUTH_PASSWORD2`: the password for user 2
-* `AUTH_TOKEN_EXPIRATION`: the expiration time in seconds for authentication tokens
-
-***Warning:*** Overriding these options is not recommended for most cases.
-
-
 ## Choosing a database
 
 Out of the box, the Device Registry Service uses a [SQLite](https://www.sqlite.org/index.html) database.
@@ -78,17 +62,34 @@ There are two ways to manage the app's database:
 1. *Testing:* create a fresh, empty, in-memory SQLite database every time `flask run` is launched.
 2. *Development:* create a SQLite database file named `registry_data.sqlite` with a few prepopulated devices.
 
-By default, the app uses the *Testing* database.
-However, you can explicitly change this using the `FLASK_CONFIG` environment variable:
+Set the `FLASK_CONFIG` environment variable to chose which database to use:
 
 1. For the *Testing* database, set `FLASK_CONFIG` to `testing`.
 2. For the *Development* database, set `FLASK_CONFIG` to `development`.
+
+If `FLASK_CONFIG` is not set, then the app uses the *Testing* database by default.
 
 If you want to use the *Development* database,
 you must create it *before* running the Flask app.
 Run `flask init-db` to create the initial `registry_data.sqlite` file in the project's root directory.
 Then, set `FLASK_CONFIG` to `development` and run `flask run` to run the app with this database.
 Any changes will persist, even after the app is restarted.
+
+
+## Setting configuration options
+
+The Device Registry Service stores all its configuration options in `config.py`.
+The following configuration options have default values,
+but they may optionally be overridden using environment variables:
+
+* `SECRET_KEY`: the secret key used for app security
+* `AUTH_USERNAME1`: the username for user 1
+* `AUTH_PASSWORD1`: the password for user 1
+* `AUTH_USERNAME2`: the username for user 2
+* `AUTH_PASSWORD2`: the password for user 2
+* `AUTH_TOKEN_EXPIRATION`: the expiration time in seconds for authentication tokens
+
+***Warning:*** Overriding these options is not recommended for most cases.
 
 
 ## Running the test cases
@@ -139,6 +140,8 @@ then `tests/integration/config.json` should look like this:
 
 ***Note:*** `tests/integration/config.json` is not committed to the repository
 because inputs and secrets should *never* be committed to a publicly-shared location.
+(Nevertheless, this web service is a teaching example,
+so values are pasted in the section above for convenience and clarity.)
 
 Once the config file is ready, configure the app to use the *Testing* database and run `flask run`.
 Then, in another command line terminal, run `python -m pytest tests`.
