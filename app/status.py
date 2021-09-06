@@ -32,6 +32,10 @@ def index():
 @status.route('/status/', methods=['GET'])
 @auto.doc()
 def status_get():
+  """
+  Provides uptime information about the web service.
+  """
+  
   response = {
     'online': True,
     'uptime': round(time.time() - START_TIME, 3)

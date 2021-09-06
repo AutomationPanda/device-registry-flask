@@ -25,12 +25,20 @@ auto = Autodoc()
 @docs.route('/docs/')
 @auto.doc()
 def docs_get():
-  return auto.html(title='Device Registry Service Documentation')
+  """
+  Provides HTML documentation for the Device Registry Service REST API.
+  """
+  
+  return auto.html(title='Device Registry Service REST API Documentation')
 
 
 @docs.route('/docs/json/', methods=['GET'])
 @auto.doc()
 def docs_json_get():
+  """
+  Provides JSON documentation for the Device Registry Service REST API.
+  """
+  
   doc_data = auto.generate()
   for d in doc_data:
     d['args'] = list(d['args'])

@@ -97,6 +97,11 @@ def auth_error():
 @auto.doc()
 @basic_auth.login_required
 def authenticate():
+  """
+  Uses HTTP basic authentication to generate an authentication token.
+  Any resource that requires authentication can use either basic auth or this token.
+  """
+  
   token = serialize_token(basic_auth.current_user())
   response = {'token': token.decode('ascii')}
   return jsonify(response)

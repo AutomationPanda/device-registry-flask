@@ -49,6 +49,11 @@ def query_device(id, username):
 @auto.doc()
 @multi_auth.login_required
 def devices_get():
+  """
+  Gets a list of all devices owned by the user.
+  Requires authentication.
+  """
+  
   filter_args = dict()
   filter_args['owner'] = multi_auth.current_user()
 
@@ -65,6 +70,11 @@ def devices_get():
 @auto.doc()
 @multi_auth.login_required
 def devices_post():
+  """
+  Adds a new device owned by the user.
+  Requires authentication.
+  """
+
   username = multi_auth.current_user()
   device = Device.from_json(request.json, username)
   db.session.add(device)
@@ -76,6 +86,11 @@ def devices_post():
 @auto.doc()
 @multi_auth.login_required
 def device_id_get(id):
+  """
+  Gets a device owned by the user.
+  Requires authentication.
+  """
+
   username = multi_auth.current_user()
   device = query_device(id, username)
   return jsonify(device.to_json())
@@ -85,6 +100,11 @@ def device_id_get(id):
 @auto.doc()
 @multi_auth.login_required
 def device_id_patch_put(id):
+  """
+  Updates a device owned by the user.
+  Requires authentication.
+  """
+
   username = multi_auth.current_user()
   device = query_device(id, username)
   
@@ -102,6 +122,11 @@ def device_id_patch_put(id):
 @auto.doc()
 @multi_auth.login_required
 def device_id_delete(id):
+  """
+  Deletes a device owned by the user.
+  Requires authentication.
+  """
+
   username = multi_auth.current_user()
   device = query_device(id, username)
   db.session.delete(device)
@@ -113,6 +138,11 @@ def device_id_delete(id):
 @auto.doc()
 @multi_auth.login_required
 def devices_id_report_get(id):
+  """
+  Prints a text-based report for a device owned by the user.
+  Requires authentication.
+  """
+
   username = multi_auth.current_user()
   device = query_device(id, username)
 
