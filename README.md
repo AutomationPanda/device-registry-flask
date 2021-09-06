@@ -7,7 +7,7 @@ WiFi routers, voice assistants, thermostats, light switches, and even appliances
 
 The Device Registry Service is written in Python using Flask, and it stores data in a SQLite database.
 It is the web service used for Chapter 6 in *The Way To Test Software* by Andrew Knight.
-Note that it is not a **real** web service, but rather one to use as a teaching example.
+Note that it is not a *real* web service, but rather one to use as a teaching example.
 
 
 ## Installation
@@ -64,7 +64,7 @@ The following configuration options may be overridden using environment variable
 * `AUTH_PASSWORD2`: the password for user 2
 * `AUTH_TOKEN_EXPIRATION`: the expiration time in seconds for authentication tokens
 
-**Warning:** Overriding these options is not recommended for most cases.
+***Warning:*** Overriding these options is not recommended for most cases.
 
 
 ## Choosing a database
@@ -75,17 +75,17 @@ but it works just fine for this small example web service.
 
 There are two ways to manage the app's database:
 
-1. **Testing:** create a fresh, empty, in-memory SQLite database every time `flask run` is launched.
-2. **Development:** create a SQLite database file named `registry_data.sqlite` with a few prepopulated devices.
+1. *Testing:* create a fresh, empty, in-memory SQLite database every time `flask run` is launched.
+2. *Development:* create a SQLite database file named `registry_data.sqlite` with a few prepopulated devices.
 
-By default, the app uses the **Testing** database.
+By default, the app uses the *Testing* database.
 However, you can explicitly change this using the `FLASK_CONFIG` environment variable:
 
-1. For the **Testing** database, set `FLASK_CONFIG` to `testing`.
-2. For the **Development** database, set `FLASK_CONFIG` to `development`.
+1. For the *Testing* database, set `FLASK_CONFIG` to `testing`.
+2. For the *Development* database, set `FLASK_CONFIG` to `development`.
 
-If you want to use the **Development** database,
-you must create it **before** running the Flask app.
+If you want to use the *Development* database,
+you must create it *before* running the Flask app.
 Run `flask init-db` to create the initial `registry_data.sqlite` file in the project's root directory.
 Then, set `FLASK_CONFIG` to `development` and run `flask run` to run the app with this database.
 Any changes will persist, even after the app is restarted.
@@ -137,12 +137,12 @@ then `tests/integration/config.json` should look like this:
 }
 ```
 
-**Note:** `tests/integration/config.json` is not committed to the repository
+***Note:*** `tests/integration/config.json` is not committed to the repository
 because inputs and secrets should *never* be committed to a publicly-shared location.
 
-Once the config file is ready, configure the app to use the **Testing** database and run `flask run`.
+Once the config file is ready, configure the app to use the *Testing* database and run `flask run`.
 Then, in another command line terminal, run `python -m pytest tests`.
-Note that the web app must be running **before** launching the tests.
+Note that the web app must be running *before* launching the tests.
 
 Here's a condensed guide for running tests:
 
@@ -155,7 +155,7 @@ Here's a condensed guide for running tests:
 
 ## Test Outline
 
-**Remove this section upon chapter completion.**
+***Remove this section upon chapter completion.***
 
 1. Basic request-response-validate test for '/status/'
    * Set up project
