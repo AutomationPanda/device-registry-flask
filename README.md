@@ -96,6 +96,9 @@ but they may optionally be overridden using environment variables:
 
 REST API integration tests are located in the `tests` directory.
 They are written using [pytest](https://docs.pytest.org/).
+The tests are not unit tests -
+they send requests to a live version of the Device Registry Service.
+If you try to run them without the following setup steps, they will fail.
 
 The tests require a configuration file that specifies the web service's base URL and available users.
 In the `tests/integration` directory, create a file named `config.json` with the following contents:
