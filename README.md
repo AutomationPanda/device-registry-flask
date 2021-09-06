@@ -2,12 +2,18 @@
 
 This project is the **Device Registry Service**,
 an example REST API web service for registering smart devices.
-A home could have multiple kinds of smart devices:
-WiFi routers, voice assistants, thermostats, light switches, and even appliances.
-
-The Device Registry Service is written in Python using Flask, and it stores data in a SQLite database.
+It is written in Python using Flask, and it stores data in a SQLite database.
 It is the web service used for Chapter 6 in *The Way To Test Software* by Andrew Knight.
 Note that it is not a "real" web service, but rather one to use as a teaching example.
+This project also contains integration tests to test the REST API endpoints.
+
+What does the Device Registry Service do?
+It stores records for all smart devices a user owns in one central place.
+A home could have multiple kinds of smart devices:
+WiFi routers, voice assistants, thermostats, light switches, and even appliances.
+This service stores information like name, location, type, model, and serial number for each device.
+Its API enables callers to practice CRUD (Create, Retrieve, Update, Delete) operations.
+In theory, a dashboard or monitoring app could use a registry service like this to quickly access devices.
 
 
 ## Installation
