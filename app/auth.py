@@ -18,6 +18,7 @@ Tokens expire after 1 hour (unless otherwise configured).
 # --------------------------------------------------------------------------------
 
 from . import users
+from .docs import auto
 from .errors import unauthorized
 
 from flask import Blueprint, current_app, jsonify
@@ -92,7 +93,8 @@ def auth_error():
 # Resources
 # --------------------------------------------------------------------------------
 
-@auth.route('/authenticate/')
+@auth.route('/authenticate/', methods=['GET'])
+@auto.doc()
 @basic_auth.login_required
 def authenticate():
   token = serialize_token(basic_auth.current_user())

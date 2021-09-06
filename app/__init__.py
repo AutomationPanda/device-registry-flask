@@ -41,6 +41,10 @@ def create_app(config_name):
   with app.app_context():
     db.create_all()
 
+  from .docs import auto as autodoc, docs as docs_blueprint
+  autodoc.init_app(app)
+  app.register_blueprint(docs_blueprint)
+
   from .errors import errors as error_blueprint
   app.register_blueprint(error_blueprint)
 

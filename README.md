@@ -47,8 +47,7 @@ $ flask run
 
 When running, the web service can be accessed at `http://127.0.0.1:5000/`
 (the address printed by the `flask run` output).
-If you load that address in a web browser, you should see a page with the following message:
-"This is a device registry web service. It provides a REST API for managing smart devices."
+If you load that address in a web browser, you should see docs for the REST API.
 
 
 ## Choosing a database
@@ -90,6 +89,14 @@ but they may optionally be overridden using environment variables:
 * `AUTH_TOKEN_EXPIRATION`: the expiration time in seconds for authentication tokens
 
 ***Warning:*** Overriding these options is not recommended for most cases.
+
+
+## Reading the REST API docs
+
+The Device Registry Service provides its REST API docs at the `/docs/` resource.
+The home page `/` also redirects to the `/docs/` page.
+The `/docs/json/` resource provides the docs as a JSON object.
+Docs are automatically generated using [flask-selfdoc](https://github.com/jwg4/flask-selfdoc).
 
 
 ## Running the test cases

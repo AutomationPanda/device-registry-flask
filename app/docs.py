@@ -1,39 +1,37 @@
 """
-This module provides a blueprint for status-related resources.
+This module provides documentation using `flask-autodoc`.
 """
 
 # --------------------------------------------------------------------------------
 # Imports
 # --------------------------------------------------------------------------------
 
-import time
-
-from . import START_TIME
-from .docs import auto
-from flask import Blueprint, jsonify, redirect
+from flask import Blueprint, jsonify
+from flask_selfdoc import Autodoc
 
 
 # --------------------------------------------------------------------------------
 # Blueprint
 # --------------------------------------------------------------------------------
 
-status = Blueprint('status', __name__)
+docs = Blueprint('doc', __name__)
+auto = Autodoc()
 
 
 # --------------------------------------------------------------------------------
 # Resources
 # --------------------------------------------------------------------------------
 
-@status.route('/')
-def index():
-  return redirect('/docs/')
-
-
-@status.route('/status/', methods=['GET'])
+@docs.route('/docs/')
 @auto.doc()
-def status_get():
-  response = {
-    'online': True,
-    'uptime': round(time.time() - START_TIME, 3)
-  }
-  return jsonify(response)
+def docs_get():
+  return auto.html(title='Device Registry Service Documentation')
+
+
+@docs.route('/docs/json/', methods=['GET'])
+@auto.doc()
+def docs_json_get():
+  doc_data = auto.generate()
+  for d in doc_data:
+    d['args'] = list(d['args'])
+  return jsonify(doc_data)

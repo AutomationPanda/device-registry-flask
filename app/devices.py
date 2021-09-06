@@ -11,6 +11,7 @@ import io
 
 from . import db
 from .auth import multi_auth
+from .docs import auto
 from .errors import NotFoundError, UserUnauthorizedError, ValidationError
 from .models import Device
 
@@ -45,6 +46,7 @@ def query_device(id, username):
 # --------------------------------------------------------------------------------
 
 @devices.route('/devices/', methods=['GET'])
+@auto.doc()
 @multi_auth.login_required
 def devices_get():
   filter_args = dict()
@@ -60,6 +62,7 @@ def devices_get():
 
 
 @devices.route('/devices/', methods=['POST'])
+@auto.doc()
 @multi_auth.login_required
 def devices_post():
   username = multi_auth.current_user()
@@ -70,6 +73,7 @@ def devices_post():
 
 
 @devices.route('/devices/<int:id>', methods=['GET'])
+@auto.doc()
 @multi_auth.login_required
 def device_id_get(id):
   username = multi_auth.current_user()
@@ -78,6 +82,7 @@ def device_id_get(id):
 
 
 @devices.route('/devices/<int:id>', methods=['PATCH', 'PUT'])
+@auto.doc()
 @multi_auth.login_required
 def device_id_patch_put(id):
   username = multi_auth.current_user()
@@ -94,6 +99,7 @@ def device_id_patch_put(id):
 
 
 @devices.route('/devices/<int:id>', methods=['DELETE'])
+@auto.doc()
 @multi_auth.login_required
 def device_id_delete(id):
   username = multi_auth.current_user()
@@ -104,6 +110,7 @@ def device_id_delete(id):
 
 
 @devices.route('/devices/<int:id>/report', methods=['GET'])
+@auto.doc()
 @multi_auth.login_required
 def devices_id_report_get(id):
   username = multi_auth.current_user()
