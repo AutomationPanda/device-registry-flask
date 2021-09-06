@@ -13,6 +13,8 @@ In a risk-based approach, it might be better to cover only a few endpoints.
 import pytest
 import requests
 
+from testlib.devices import verify_devices
+
 
 # --------------------------------------------------------------------------------
 # Authentication Tests
@@ -62,9 +64,66 @@ def test_devices_get_with_shared_token_auth(base_url, shared_auth_token):
 # Authorization Tests
 # --------------------------------------------------------------------------------
 
-# One user cannot access another user's devices
-#   * GET /devices/
-#   * GET /devices/<id>
-#   * PATCH /devices/<id>
-#   * PUT /devices/<id>
-#   * DELETE /devices/<id>
+def test_user_authorization_for_devices_get_list(base_url, alt_session, thermostat):
+  
+  # Get all devices
+  device_id_url = base_url.concat(f'/devices/')
+  get_response = alt_session.get(device_id_url)
+  get_data = get_response.json()
+
+  # Verify the user's device is NOT in the alt_user's list
+  assert get_response.status_code == 200
+  assert 'devices' in get_data
+  verify_devices(get_data['devices'], excluding=[thermostat['id']])
+
+
+def test_user_authorization_for_devices_get_by_id(base_url, alt_session, thermostat):
+  
+  # Attempt retrieve
+  device_id_url = base_url.concat(f'/devices/{thermostat["id"]}')
+  get_response = alt_session.get(device_id_url)
+  get_data = get_response.json()
+
+  # Verify error
+  assert get_response.status_code == 403
+  assert get_data['error'] == 'forbidden'
+  assert get_data['message'] == 'current user is not authorized to access this resource'
+
+
+def test_user_authorization_for_devices_patch(base_url, alt_session, thermostat, thermostat_patch_data):
+  
+  # Attempt retrieve
+  device_id_url = base_url.concat(f'/devices/{thermostat["id"]}')
+  get_response = alt_session.patch(device_id_url, json=thermostat_patch_data)
+  get_data = get_response.json()
+
+  # Verify error
+  assert get_response.status_code == 403
+  assert get_data['error'] == 'forbidden'
+  assert get_data['message'] == 'current user is not authorized to access this resource'
+
+
+def test_user_authorization_for_devices_put(base_url, alt_session, thermostat, light_data):
+  
+  # Attempt retrieve
+  device_id_url = base_url.concat(f'/devices/{thermostat["id"]}')
+  get_response = alt_session.put(device_id_url, json=light_data)
+  get_data = get_response.json()
+
+  # Verify error
+  assert get_response.status_code == 403
+  assert get_data['error'] == 'forbidden'
+  assert get_data['message'] == 'current user is not authorized to access this resource'
+
+
+def test_user_authorization_for_devices_delete(base_url, alt_session, thermostat):
+  
+  # Attempt retrieve
+  device_id_url = base_url.concat(f'/devices/{thermostat["id"]}')
+  get_response = alt_session.delete(device_id_url)
+  get_data = get_response.json()
+
+  # Verify error
+  assert get_response.status_code == 403
+  assert get_data['error'] == 'forbidden'
+  assert get_data['message'] == 'current user is not authorized to access this resource'

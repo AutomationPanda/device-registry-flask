@@ -31,10 +31,16 @@ def verify_device_data(actual, expected):
     assert actual[field] == expected[field]
 
 
-def verify_devices(actual_list, expected_list, excluding=None):
+def verify_devices(actual_list, including=None, excluding=None):
   
+  # Set lists if not given
+  if not including:
+    including = list()
+  if not excluding:
+    excluding = list()
+
   # Verify the device count
-  assert len(actual_list) >= len(expected_list)
+  assert len(actual_list) >= len(including)
 
   # Create a mapping of IDs to data for actual devices
   # This will make verifications much more efficient
@@ -42,15 +48,14 @@ def verify_devices(actual_list, expected_list, excluding=None):
 
   # Verify each expected device is in the actual list
   # Note that other devices could also be in the actual list, and that's okay
-  for expected in expected_list:
-    assert expected['id'] in actual_map
-    actual = actual_map[expected['id']]
-    verify_device_data(actual, expected)
+  for included in including:
+    assert included['id'] in actual_map
+    actual = actual_map[included['id']]
+    verify_device_data(actual, included)
   
   # Verify excluded device IDs are not in the actual list
-  if excluding:
-    for excluded in excluding:
-      assert excluded not in actual_map
+  for excluded in excluding:
+    assert excluded not in actual_map
       
 
 # --------------------------------------------------------------------------------
