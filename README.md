@@ -1,11 +1,12 @@
 # device-registry
 
-This project is a REST API web service for registering smart devices.
+This project is an example REST API web service for registering smart devices.
 A home could have multiple kinds of smart devices:
 WiFi routers, voice assistants, thermostats, light switches, and even appliances.
 
 This device registry is written in Python using Flask, and it stores data in a SQLite database.
 It is the web service used for Chapter 6 in *The Way To Test Software* by Andrew Knight.
+Note that it is not a **real** web service, but rather one to use as a teaching example.
 
 
 ## TODO
@@ -15,6 +16,8 @@ It is the web service used for Chapter 6 in *The Way To Test Software* by Andrew
 
 
 ## Tests
+
+**Remove this section upon chapter completion.**
 
 1. Basic request-response-validate test for '/status/'
    * Set up project
@@ -40,4 +43,3 @@ It is the web service used for Chapter 6 in *The Way To Test Software* by Andrew
    * File downloads
    * HEAD and OPTIONS for GET
    * Invalid methods
-   * Handling large bodies with templates
