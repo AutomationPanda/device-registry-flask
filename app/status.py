@@ -25,7 +25,12 @@ status = Blueprint('status', __name__)
 # --------------------------------------------------------------------------------
 
 @status.route('/')
+@auto.doc()
 def index():
+  """
+  Redirects to '/docs/'.
+  """
+
   return redirect('/docs/')
 
 
