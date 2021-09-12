@@ -26,7 +26,7 @@ To install it:
 2. Clone the GitHub repository on to your local machine.
 3. Install dependency packages from the command line:
    1. Change directory to the project's root directory.
-   2. Run `pip install requirements.txt` to install all dependencies.
+   2. Run `pip install -r requirements.txt` to install all dependencies.
 
 
 ## Running the web service
