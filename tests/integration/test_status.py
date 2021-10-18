@@ -3,8 +3,6 @@ This module contains integration tests for the '/status/' resource.
 The main method for '/status/' is GET.
 Flask also automatically adds HEAD and OPTIONS responses for GET routes.
 Unsupported methods should return 405 status codes.
-These methods should be tested, but the tests are repetitive.
-Tests should be parametrized together to minimize code duplication.
 """
 
 # --------------------------------------------------------------------------------
