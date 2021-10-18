@@ -33,16 +33,10 @@ def test_status_get(base_url):
 # Tests for HEAD
 # --------------------------------------------------------------------------------
 
-@pytest.mark.parametrize(
-  'resource',
-  [
-    ('/status/')
-  ]
-)
-def test_status_head(base_url, resource):
+def test_status_head(base_url):
 
   # Call HEAD
-  url = base_url.concat(resource)
+  url = base_url.concat('/status/')
   response = requests.head(url)
   
   # Response should be successful without a body
@@ -62,16 +56,10 @@ def test_status_head(base_url, resource):
 # Tests for OPTIONS
 # --------------------------------------------------------------------------------
 
-@pytest.mark.parametrize(
-  'resource, supported',
-  [
-    ('/status/', ['HEAD', 'OPTIONS', 'GET'])
-  ]
-)
-def test_status_options(base_url, resource, supported):
+def test_status_options(base_url):
 
   # Call OPTIONS
-  url = base_url.concat(resource)
+  url = base_url.concat('/status/')
   response = requests.options(url)
   
   # Response should be successful without a body
@@ -79,7 +67,7 @@ def test_status_options(base_url, resource, supported):
   assert response.text == ''
 
   # Response 'Allow' header should list supported methods
-  for valid_method in supported:
+  for valid_method in ['HEAD', 'OPTIONS', 'GET']:
     assert valid_method in response.headers['Allow']
 
 
@@ -88,18 +76,18 @@ def test_status_options(base_url, resource, supported):
 # --------------------------------------------------------------------------------
 
 @pytest.mark.parametrize(
-  'resource, method, supported',
+  'method, supported',
   [
-    ('/status/', 'DELETE', ['HEAD', 'OPTIONS', 'GET']),
-    ('/status/', 'PATCH', ['HEAD', 'OPTIONS', 'GET']),
-    ('/status/', 'POST', ['HEAD', 'OPTIONS', 'GET']),
-    ('/status/', 'PUT', ['HEAD', 'OPTIONS', 'GET'])
+    ('DELETE', ['HEAD', 'OPTIONS', 'GET']),
+    ('PATCH',  ['HEAD', 'OPTIONS', 'GET']),
+    ('POST',   ['HEAD', 'OPTIONS', 'GET']),
+    ('PUT',    ['HEAD', 'OPTIONS', 'GET'])
   ]
 )
-def test_status_invalid_method(base_url, resource, method, supported):
+def test_status_invalid_method(base_url, method, supported):
 
   # Call the unsupported method
-  url = base_url.concat(resource)
+  url = base_url.concat('/status/')
   response = requests.request(method, url)
   data = response.json()
 
