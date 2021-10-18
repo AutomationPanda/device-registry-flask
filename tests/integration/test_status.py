@@ -59,7 +59,7 @@ def test_status_head(base_url, resource):
 
 
 # --------------------------------------------------------------------------------
-# Method Tests for OPTIONS
+# Tests for OPTIONS
 # --------------------------------------------------------------------------------
 
 @pytest.mark.parametrize(
