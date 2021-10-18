@@ -114,7 +114,7 @@ they send requests to a live version of the Device Registry Service.
 If you try to run them without the following setup steps, they will fail.
 
 The tests require a configuration file that specifies the web service's base URL and available users.
-In the `tests/integration` directory, create a file named `config.json` with the following contents:
+In the `tests/integration` directory, create a file named `inputs.json` with the following contents:
 
 ```json
 {
@@ -135,7 +135,7 @@ In the `tests/integration` directory, create a file named `config.json` with the
 
 You will need to substitute appropriate values for the `"<...>"` values.
 If you run the Device Registry Service with the default values from `config.py`,
-then `tests/integration/config.json` should look like this:
+then `tests/integration/inputs.json` should look like this:
 
 ```json
 {
@@ -154,12 +154,12 @@ then `tests/integration/config.json` should look like this:
 }
 ```
 
-***Note:*** `tests/integration/config.json` is not committed to the repository
+***Note:*** `tests/integration/inputs.json` is not committed to the repository
 because inputs and secrets should *never* be committed to a publicly-shared location.
 (Nevertheless, this web service is a teaching example,
 so values are pasted in the section above for convenience and clarity.)
 
-Once the config file is ready, configure the app to use the *Testing* database and run `flask run`.
+Once the inputs file is ready, configure the app to use the *Testing* database and run `flask run`.
 Then, in another command line terminal, run `python -m pytest tests`.
 Note that the web app must be running *before* launching the tests.
 
@@ -168,7 +168,7 @@ Here's a condensed guide for running tests:
 1. Set the `FLASK_APP` environment variable to `registry`.
 2. Set the `FLASK_CONFIG` environment variable to `testing`.
 3. Run `flask run` from the project root directory.
-4. Create the `tests/integration/config.json` file.
+4. Create the `tests/integration/inputs.json` file.
 5. Run `python -m pytest tests` from the project root directory.
 
 
@@ -179,10 +179,10 @@ Here's a condensed guide for running tests:
 1. Basic request-response-validate test for '/status/'
    * Set up project
    * Write the test with hard-coding
-   * Improve with config file and base URL builder
+   * Improve with inputs file and base URL builder
 2. Authentication for '/devices/'
    * Demonstrate GET with and without auth & explain
-   * Add credentials to config file
+   * Add credentials to inputs file
    * Write positive test with auth
    * Write negative test without auth
    * Show auth with tokens

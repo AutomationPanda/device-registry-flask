@@ -39,7 +39,7 @@ def test_status_get(base_url):
     ('/status/')
   ]
 )
-def test_head(base_url, resource):
+def test_status_head(base_url, resource):
 
   # Call HEAD
   url = base_url.concat(resource)

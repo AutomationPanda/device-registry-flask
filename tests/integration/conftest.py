@@ -19,8 +19,8 @@ from testlib.devices import DeviceCreator, verify_device_data
 # Private Functions
 # --------------------------------------------------------------------------------
 
-def _build_user(test_config, index):
-  users = test_config['users']
+def _build_user(inputs, index):
+  users = inputs['users']
   user = User(users[index]['username'], users[index]['password'])
   return user
 
@@ -36,25 +36,25 @@ def _build_session(user):
 # --------------------------------------------------------------------------------
 
 @pytest.fixture(scope='session')
-def test_config():
-  with open('tests/integration/config.json') as config_json:
+def test_inputs():
+  with open('tests/integration/inputs.json') as config_json:
     data = json.load(config_json)
   return data
 
 
 @pytest.fixture
-def base_url(test_config):
-  return BaseUrl(test_config['base_url'])
+def base_url(test_inputs):
+  return BaseUrl(test_inputs['base_url'])
 
 
 @pytest.fixture
-def user(test_config):
-  return _build_user(test_config, 0)
+def user(test_inputs):
+  return _build_user(test_inputs, 0)
 
 
 @pytest.fixture
-def alt_user(test_config):
-  return _build_user(test_config, 1)
+def alt_user(test_inputs):
+  return _build_user(test_inputs, 1)
 
 
 # --------------------------------------------------------------------------------
