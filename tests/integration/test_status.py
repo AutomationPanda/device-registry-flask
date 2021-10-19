@@ -44,9 +44,16 @@ def test_status_head(base_url):
   # Response headers should match GET responses
   get_response = requests.get(url)
   assert len(response.headers) == len(get_response.headers)
+
+  # Compare each header value
   for header in response.headers:
     assert header in get_response.headers
-    if header != 'Date' and header != 'Content-Length':
+
+    if header == 'Content-Length':
+      head_length = int(response.headers[header])
+      get_length = int(get_response.headers[header])
+      assert abs(head_length - get_length) <= 4
+    elif header != 'Date':
       assert response.headers[header] == get_response.headers[header]
 
 
