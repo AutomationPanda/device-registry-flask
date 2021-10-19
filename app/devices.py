@@ -12,7 +12,7 @@ import io
 from . import db
 from .auth import multi_auth
 from .docs import auto
-from .errors import NotFoundError, UserUnauthorizedError, ValidationError
+from .errors import NotFoundError, UserUnauthorizedError
 from .models import Device
 
 from flask import Blueprint, jsonify, request
