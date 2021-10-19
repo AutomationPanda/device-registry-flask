@@ -82,15 +82,10 @@ def test_status_options(base_url):
 # --------------------------------------------------------------------------------
 
 @pytest.mark.parametrize(
-  'method, supported',
-  [
-    ('DELETE', ['HEAD', 'OPTIONS', 'GET']),
-    ('PATCH',  ['HEAD', 'OPTIONS', 'GET']),
-    ('POST',   ['HEAD', 'OPTIONS', 'GET']),
-    ('PUT',    ['HEAD', 'OPTIONS', 'GET'])
-  ]
+  'method',
+  ['DELETE', 'PATCH', 'POST', 'PUT']
 )
-def test_status_invalid_method(base_url, method, supported):
+def test_status_invalid_method(base_url, method):
 
   # Call the unsupported method
   url = base_url.concat('/status/')
@@ -100,7 +95,4 @@ def test_status_invalid_method(base_url, method, supported):
   # Response should be a 405 error
   assert response.status_code == 405
   assert data['error'] == 'method not allowed'
-
-  # Response should list supported methods
-  for valid_method in supported:
-    assert valid_method in data['valid_methods']
+  assert sorted(data['valid_methods']) == ['GET', 'HEAD', 'OPTIONS']
