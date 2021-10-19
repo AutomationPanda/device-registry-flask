@@ -72,8 +72,9 @@ def test_status_options(base_url):
   assert response.text == ''
 
   # Response 'Allow' header should list supported methods
-  for valid_method in ['HEAD', 'OPTIONS', 'GET']:
-    assert valid_method in response.headers['Allow']
+  allow_string = response.headers['Allow']
+  allowed = sorted(allow_string.split(', '))
+  assert allowed == ['GET', 'HEAD', 'OPTIONS']
 
 
 # --------------------------------------------------------------------------------
