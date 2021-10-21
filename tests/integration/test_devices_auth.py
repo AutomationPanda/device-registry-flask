@@ -84,6 +84,13 @@ def test_devices_get_with_invalid_password(base_url, user):
   verify_unauthorized(response)
 
 
+def test_devices_get_with_invalid_token(base_url, auth_token):
+  url = base_url.concat('/devices/')
+  headers = {'Authorization': 'Bearer ' + auth_token + 'X'}
+  response = requests.get(url, headers=headers)
+  verify_unauthorized(response)
+
+
 # --------------------------------------------------------------------------------
 # Authorization Tests
 # --------------------------------------------------------------------------------
