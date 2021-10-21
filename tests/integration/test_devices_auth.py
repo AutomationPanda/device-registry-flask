@@ -17,47 +17,71 @@ from testlib.devices import verify_devices
 
 
 # --------------------------------------------------------------------------------
-# Authentication Tests
+# Verification Functions
 # --------------------------------------------------------------------------------
 
-def test_devices_get_with_no_auth(base_url):
-  url = base_url.concat('/devices/')
-  response = requests.get(url)
+def verify_authorized(response):
   data = response.json()
+  assert response.status_code == 200
+  assert 'devices' in data
 
+
+def verify_unauthorized(response):
+  data = response.json()
   assert response.status_code == 401
   assert data['error'] == 'unauthorized'
   assert data['message'] == 'Invalid credentials'
 
 
+# --------------------------------------------------------------------------------
+# Authentication Tests
+# --------------------------------------------------------------------------------
+
 def test_devices_get_with_basic_auth(base_url, user):
   url = base_url.concat('/devices/')
   auth = (user.username, user.password)
   response = requests.get(url, auth=auth)
-  data = response.json()
+  verify_authorized(response)
 
-  assert response.status_code == 200
-  assert 'devices' in data
+
+def test_devices_get_with_basic_auth_session(base_url, session):
+  url = base_url.concat('/devices/')
+  response = session.get(url)
+  verify_authorized(response)
 
 
 def test_devices_get_with_token_auth(base_url, auth_token):
   url = base_url.concat('/devices/')
   headers = {'Authorization': 'Bearer ' + auth_token}
   response = requests.get(url, headers=headers)
-  data = response.json()
-
-  assert response.status_code == 200
-  assert 'devices' in data
+  verify_authorized(response)
 
 
 def test_devices_get_with_shared_token_auth(base_url, shared_auth_token):
   url = base_url.concat('/devices/')
   headers = {'Authorization': 'Bearer ' + shared_auth_token}
   response = requests.get(url, headers=headers)
-  data = response.json()
+  verify_authorized(response)
 
-  assert response.status_code == 200
-  assert 'devices' in data
+
+def test_devices_get_with_no_auth(base_url):
+  url = base_url.concat('/devices/')
+  response = requests.get(url)
+  verify_unauthorized(response)
+
+
+def test_devices_get_with_invalid_username(base_url, user):
+  url = base_url.concat('/devices/')
+  auth = (user.username + 'X', user.password)
+  response = requests.get(url, auth=auth)
+  verify_unauthorized(response)
+
+
+def test_devices_get_with_invalid_password(base_url, user):
+  url = base_url.concat('/devices/')
+  auth = (user.username, user.password + 'X')
+  response = requests.get(url, auth=auth)
+  verify_unauthorized(response)
 
 
 # --------------------------------------------------------------------------------
