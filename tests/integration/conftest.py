@@ -12,7 +12,7 @@ import requests
 import time
 
 from testlib.api import BaseUrl, User, TokenHolder
-from testlib.devices import DeviceCreator, verify_device_data
+from testlib.devices import DeviceCreator
 
 
 # --------------------------------------------------------------------------------

@@ -21,8 +21,6 @@ NONEXISTENT_ID = 999999999
 import pytest
 import requests
 
-from testlib.devices import verify_device_data
-
 
 # --------------------------------------------------------------------------------
 # Create Tests
@@ -37,7 +35,7 @@ def test_create_and_retrieve_device(base_url, session, thermostat):
 
   # Verify retrieve
   assert get_response.status_code == 200
-  verify_device_data(get_data, thermostat)
+  assert get_data == thermostat
 
 
 def test_create_with_no_body_yields_error(base_url, session):
@@ -125,7 +123,7 @@ def test_update_device_via_put(base_url, user, session, thermostat, light_data):
   assert put_response.status_code == 200
   light_data['id'] = thermostat['id']
   light_data['owner'] = user.username
-  verify_device_data(put_data, light_data)
+  assert put_data == light_data
 
   # Retrieve
   device_id_url = base_url.concat(f'/devices/{light_data["id"]}')
@@ -134,7 +132,7 @@ def test_update_device_via_put(base_url, user, session, thermostat, light_data):
 
   # Verify retrieve
   assert get_response.status_code == 200
-  verify_device_data(get_data, put_data)
+  assert get_data == put_data
 
 
 def test_update_device_via_put_with_no_body_yields_error(base_url, session, thermostat):
@@ -223,7 +221,7 @@ def test_update_device_via_patch(
   thermostat_patch_data['model'] = thermostat['model']
   thermostat_patch_data['serial_number'] = thermostat['serial_number']
   thermostat_patch_data['owner'] = user.username
-  verify_device_data(patch_data, thermostat_patch_data)
+  assert patch_data == thermostat_patch_data
 
   # Retrieve
   device_id_url = base_url.concat(f'/devices/{patch_data["id"]}')
@@ -232,7 +230,7 @@ def test_update_device_via_patch(
 
   # Verify retrieve
   assert get_response.status_code == 200
-  verify_device_data(get_data, patch_data)
+  assert get_data == patch_data
 
 
 @pytest.mark.parametrize(
@@ -254,7 +252,7 @@ def test_update_device_via_patch_with_one_field(
   # Verify patch
   assert patch_response.status_code == 200
   thermostat_data[field] = value
-  verify_device_data(patch_data, thermostat_data)
+  assert patch_data == thermostat_data
 
   # Retrieve
   device_id_url = base_url.concat(f'/devices/{patch_data["id"]}')
@@ -263,7 +261,7 @@ def test_update_device_via_patch_with_one_field(
 
   # Verify retrieve
   assert get_response.status_code == 200
-  verify_device_data(get_data, patch_data)
+  assert get_data == patch_data
 
 
 def test_update_device_via_patch_with_no_body_yields_error(

@@ -13,24 +13,6 @@ import warnings
 # Verification Functions
 # --------------------------------------------------------------------------------
 
-def verify_device_data(actual, expected):
-
-  # Verify ID
-  if 'id' in expected:
-    assert actual['id'] == expected['id']
-  else:
-    assert isinstance(actual['id'], int)
-  
-  # Verify field length
-  fields = ['name', 'location', 'type', 'model', 'serial_number', 'owner']
-  assert len(actual) == len(fields) + 1
-
-  # Verify field values
-  for field in fields:
-    assert field in actual
-    assert actual[field] == expected[field]
-
-
 def verify_devices(actual_list, including=None, excluding=None):
   
   # Set lists if not given
@@ -51,7 +33,7 @@ def verify_devices(actual_list, including=None, excluding=None):
   for included in including:
     assert included['id'] in actual_map
     actual = actual_map[included['id']]
-    verify_device_data(actual, included)
+    assert actual == included
   
   # Verify excluded device IDs are not in the actual list
   for excluded in excluding:
@@ -78,8 +60,10 @@ class DeviceCreator:
     
     # Verify create
     assert post_response.status_code == 200
+    assert isinstance(post_data['id'], int)
+    request_data['id'] = post_data['id']
     request_data['owner'] = session.auth[0]
-    verify_device_data(post_data, request_data)
+    assert post_data == request_data
 
     # Register created device with its session
     self.created[post_data['id']] = session
