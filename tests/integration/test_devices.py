@@ -92,3 +92,18 @@ def test_create_device_with_waiting(base_url, session):
   assert get_response.status_code == 200
   assert len(get_devices) == 1
   assert get_devices[0] == post_data
+
+
+def test_create_device_with_fixture(base_url, session, thermostat):
+
+  # Retrieve
+  device_url = base_url.concat('/devices/')
+  get_response = session.get(device_url)
+  get_data = get_response.json()
+
+  # Verify retrieve
+  assert get_response.status_code == 200
+  get_devices = [d for d in get_data['devices']
+                   if d['id'] == thermostat['id']]
+  assert len(get_devices) == 1
+  assert get_devices[0] == thermostat
