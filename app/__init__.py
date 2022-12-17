@@ -8,14 +8,12 @@ This module also provides a reference to the database object, users, and the sta
 # Imports
 # --------------------------------------------------------------------------------
 
-import os
 import time
 
 from config import config
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from itsdangerous import TimedJSONWebSignatureSerializer as JWS
 from werkzeug.security import generate_password_hash
 
 
@@ -41,10 +39,6 @@ def create_app(config_name):
   with app.app_context():
     db.create_all()
 
-  from .docs import auto as autodoc, docs as docs_blueprint
-  autodoc.init_app(app)
-  app.register_blueprint(docs_blueprint)
-
   from .errors import errors as error_blueprint
   app.register_blueprint(error_blueprint)
 
@@ -57,10 +51,6 @@ def create_app(config_name):
   from .devices import devices as devices_blueprint
   app.register_blueprint(devices_blueprint)
 
-  app.jws = JWS(
-    app.config['SECRET_KEY'],
-    expires_in=app.config['AUTH_TOKEN_EXPIRATION'])
-  
   username1 = app.config['AUTH_USERNAME1']
   password1 = generate_password_hash(app.config['AUTH_PASSWORD1'])
   users[username1] = password1
