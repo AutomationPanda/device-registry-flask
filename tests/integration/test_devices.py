@@ -8,7 +8,6 @@ However, it remains in this project to serve as example code.
 # Imports
 # --------------------------------------------------------------------------------
 
-import requests
 import time
 
 

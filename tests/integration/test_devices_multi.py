@@ -11,7 +11,6 @@ Therefore, test assertions must check only what is covered by the test.
 # --------------------------------------------------------------------------------
 
 import pytest
-import requests
 
 from testlib.devices import verify_devices
 
