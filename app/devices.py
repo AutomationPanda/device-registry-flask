@@ -11,8 +11,7 @@ import io
 
 from . import db
 from .auth import multi_auth
-from .docs import auto
-from .errors import NotFoundError, UserUnauthorizedError
+from .errors import NotFoundError, UserUnauthorizedError, ValidationError
 from .models import Device
 
 from flask import Blueprint, jsonify, request
@@ -41,12 +40,20 @@ def query_device(id, username):
   return device
 
 
+def get_json_from_request(request):
+  try:
+    data = request.json
+  except:
+    raise ValidationError(f'request body is missing all fields')
+
+  return data
+
+
 # --------------------------------------------------------------------------------
 # Resources
 # --------------------------------------------------------------------------------
 
 @devices.route('/devices/', methods=['GET'])
-@auto.doc()
 @multi_auth.login_required
 def devices_get():
   """
@@ -67,7 +74,6 @@ def devices_get():
 
 
 @devices.route('/devices/', methods=['POST'])
-@auto.doc()
 @multi_auth.login_required
 def devices_post():
   """
@@ -76,14 +82,14 @@ def devices_post():
   """
 
   username = multi_auth.current_user()
-  device = Device.from_json(request.json, username)
+  data = get_json_from_request(request)
+  device = Device.from_json(data, username)
   db.session.add(device)
   db.session.commit()
   return jsonify(device.to_json())
 
 
 @devices.route('/devices/<int:id>', methods=['GET'])
-@auto.doc()
 @multi_auth.login_required
 def device_id_get(id):
   """
@@ -97,7 +103,6 @@ def device_id_get(id):
 
 
 @devices.route('/devices/<int:id>', methods=['PATCH', 'PUT'])
-@auto.doc()
 @multi_auth.login_required
 def device_id_patch_put(id):
   """
@@ -107,11 +112,12 @@ def device_id_patch_put(id):
 
   username = multi_auth.current_user()
   device = query_device(id, username)
+  data = get_json_from_request(request)
   
   if request.method == 'PATCH':
-    device.patch_from_json(request.json)
+    device.patch_from_json(data)
   else:
-    device.update_from_json(request.json)
+    device.update_from_json(data)
   
   db.session.add(device)
   db.session.commit()
@@ -119,7 +125,6 @@ def device_id_patch_put(id):
 
 
 @devices.route('/devices/<int:id>', methods=['DELETE'])
-@auto.doc()
 @multi_auth.login_required
 def device_id_delete(id):
   """
@@ -135,7 +140,6 @@ def device_id_delete(id):
 
 
 @devices.route('/devices/<int:id>/report', methods=['GET'])
-@auto.doc()
 @multi_auth.login_required
 def devices_id_report_get(id):
   """

@@ -10,7 +10,6 @@ In a risk-based approach, it might be better to cover only a few endpoints.
 # Imports
 # --------------------------------------------------------------------------------
 
-import pytest
 import requests
 
 from testlib.devices import verify_devices

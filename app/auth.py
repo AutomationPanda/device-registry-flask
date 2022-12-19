@@ -17,13 +17,13 @@ Tokens expire after 1 hour (unless otherwise configured).
 # Imports
 # --------------------------------------------------------------------------------
 
+import jwt
+
 from . import users
-from .docs import auto
 from .errors import unauthorized
 
 from flask import Blueprint, current_app, jsonify
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth, MultiAuth
-from itsdangerous import TimedJSONWebSignatureSerializer as JWS
 from werkzeug.security import check_password_hash
 
 
@@ -49,13 +49,15 @@ multi_auth = MultiAuth(basic_auth, token_auth)
 # --------------------------------------------------------------------------------
 
 def serialize_token(username):
-  token = current_app.jws.dumps({'username': username})
+  secret_key = current_app.config['SECRET_KEY']
+  token = jwt.encode({"username": username}, secret_key, algorithm="HS256")
   return token
 
 
 def deserialize_token(token):
   try:
-    data = current_app.jws.loads(token)
+    secret_key = current_app.config['SECRET_KEY']
+    data = jwt.decode(token, secret_key, algorithms=["HS256"])
   except:
     return None
   if 'username' in data:
@@ -94,7 +96,6 @@ def auth_error():
 # --------------------------------------------------------------------------------
 
 @auth.route('/authenticate/', methods=['GET'])
-@auto.doc()
 @basic_auth.login_required
 def authenticate():
   """
@@ -103,5 +104,5 @@ def authenticate():
   """
   
   token = serialize_token(basic_auth.current_user())
-  response = {'token': token.decode('ascii')}
+  response = {'token': token}
   return jsonify(response)

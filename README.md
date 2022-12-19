@@ -3,7 +3,6 @@
 This project is the **Device Registry Service**,
 an example REST API web service for registering smart devices.
 It is written in Python using Flask, and it stores data in a SQLite database.
-It is the web service used for Chapter 6 in *The Way To Test Software* by Andrew Knight.
 Note that it is not a "real" web service, but rather one to use as a teaching example.
 This project also contains integration tests to test the REST API endpoints.
 
@@ -53,7 +52,7 @@ $ flask run
 
 When running, the web service can be accessed at `http://127.0.0.1:5000/`
 (the address printed by the `flask run` output).
-If you load that address in a web browser, you should see docs for the REST API.
+If you load that address in a web browser, you should see the status for the REST API service.
 
 
 ## Choosing a database
@@ -95,14 +94,6 @@ but they may optionally be overridden using environment variables:
 * `AUTH_TOKEN_EXPIRATION`: the expiration time in seconds for authentication tokens
 
 ***Warning:*** Overriding these options is not recommended for most cases.
-
-
-## Reading the REST API docs
-
-The Device Registry Service provides its REST API docs at the `/docs/` resource.
-The home page `/` also redirects to the `/docs/` page.
-The `/docs/json/` resource provides the docs as a JSON object.
-Docs are automatically generated using [flask-selfdoc](https://github.com/jwg4/flask-selfdoc).
 
 
 ## Running the test cases
@@ -170,33 +161,3 @@ Here's a condensed guide for running tests:
 3. Run `flask run` from the project root directory.
 4. Create the `tests/integration/inputs.json` file.
 5. Run `python -m pytest tests` from the project root directory.
-
-
-## Test Outline
-
-***Remove this section upon chapter completion.***
-
-1. Basic request-response-validate test for '/status/'
-   * Set up project
-   * Write the test with hard-coding
-   * Improve with inputs file and base URL builder
-2. Authentication for '/devices/'
-   * Demonstrate GET with and without auth & explain
-   * Add credentials to inputs file
-   * Write positive test with auth
-   * Write negative test without auth
-   * Show auth with tokens
-   * Show how to reuse token
-   * Discuss if every endpoint should test every type of auth or no-auth
-3. CRUD tests with '/devices/<id>'
-   * Include negative cases
-4. Testing multiple objects with '/devices/'
-   * Creating and deleting multiple objects
-   * Query parameters for large data
-5. Authorization tests with '/devices/'
-   * Multiple users
-   * Multiple methods
-6. Additional REST API factors
-   * File downloads
-   * HEAD and OPTIONS for GET
-   * Invalid methods

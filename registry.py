@@ -16,7 +16,6 @@ Change the target config by setting the "FLASK_CONFIG" environment variable.
 # --------------------------------------------------------------------------------
 
 import click
-import flask
 import os
 
 from app import create_app, db
