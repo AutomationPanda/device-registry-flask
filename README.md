@@ -14,6 +14,12 @@ This service stores information like name, location, type, model, and serial num
 Its API enables callers to practice CRUD (Create, Retrieve, Update, Delete) operations.
 In theory, a dashboard or monitoring app could use a registry service like this to quickly access devices.
 
+*Note:*
+I originally developed this project for my book, *The Way To Test Software*.
+However, during development, I decided to rewrite this project using [FastAPI](https://fastapi.tiangolo.com/).
+The repository for the new FastAPI project is
+[device-registry-service](https://github.com/AutomationPanda/device-registry-service).
+
 
 ## Installation
 
